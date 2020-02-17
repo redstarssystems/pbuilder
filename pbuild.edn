@@ -1,0 +1,23 @@
+{
+ ;;:java-source-paths "java-src"
+ ;;:javac-options     ["-target" "1.8" "-source" "1.8" "-Xlint:-options"]
+
+ :warn-on-resource-conflicts? true
+
+ :deploy-signed?              true
+ :deploy-repo                 {:id "clojars" :url "https://clojars.org/repo"}
+ :deploy-creds                :m2-settings                  ;; :m2-settings or :password-prompt
+
+ :target-folder               "target"
+ :group-id                    "org.rssys"
+ :artifact-id                 "pbuilder"
+ :artifact-version            "0.1.0-SNAPSHOT"
+ :main                        "org.rssys.pbuilder.core"
+ :omit-source?                true
+ ;;:uberjar-filename            "pbuilder.jar"
+ :description                 "Project builder – is a build tool for Clojure projects."
+ :url                         "https://github.com/redstarssystems/pbuilder.git"
+ :scm                         {:url "https://github.com/redstarssystems/pbuilder.git"}
+ :license                     {:name "EPL-2.0"
+                               :url  "https://www.eclipse.org/legal/epl-2.0/"}
+ }

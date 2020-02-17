@@ -1,0 +1,58 @@
+{
+ :mvn/repos {"clojars" {:url "https://repo.clojars.org/"}}
+
+ ;; don't change target/classes (do not remove it from :paths and
+ ;; do not rename it, otherwise edit build.clj)
+ :paths     ["src" "resources" "target/classes"]
+
+ :deps      {org.clojure/clojure                       {:mvn/version "1.10.1"}
+             badigeon/badigeon {:git/url "https://github.com/EwenG/badigeon.git"
+                                :sha "1edf7ae465db870ec0066f28226edb9b04873b70"
+                                :tag "0.0.11"}}
+
+ :build     {
+             :omit-source      true
+             :main             "org.rssys.pbuilder.core"
+             :group-id         "org.rssys"
+             :artifact-id      "pbuilder"
+             :artifact-version "0.1.0-SNAPSHOT"
+             }
+
+ :aliases   {
+             :run        {:extra-paths ["resources"]
+                          :jvm-opts    ["-Duser.timezone=UTC"
+                                        "-DLOG4J_CONFIGURATION_FILE=resources/log4j2.xml"]
+                          :main-opts   ["--main" "org.rssys.pbuilder.core"]}
+
+             ;; to run repl: clojure -R:bg -A:repl
+             :repl       {:extra-deps  {criterium            {:mvn/version "0.4.5"}
+                                        nrepl                {:mvn/version "0.6.0"}
+                                        healthsamurai/matcho {:mvn/version "0.3.3"}
+                                        hashp                {:mvn/version "0.1.1"}}
+                          :jvm-opts    ["-Duser.timezone=UTC"]
+                          :extra-paths ["dev/src" "resources" "test"]
+                          :main-opts   ["--main" "nrepl.cmdline"]}
+
+             :test       {:extra-deps  {lambdaisland/kaocha           {:mvn/version "0.0-573"}
+                                        lambdaisland/kaocha-cloverage {:mvn/version "0.0-41"}
+                                        healthsamurai/matcho          {:mvn/version "0.3.3"}}
+                          :extra-paths ["resources" "test" "test/resources"]
+                          :jvm-opts    ["-Duser.timezone=UTC"
+                                        ;;"-DLOG4J_CONFIGURATION_FILE=test/resources/log4j2-test.xml"
+                                        ]
+                          :main-opts   ["--main" "kaocha.runner"]}
+
+             :bg         {:extra-deps {badigeon/badigeon {:git/url "https://github.com/EwenG/badigeon.git"
+                                                          :sha     "c5d7d8f9c44fee2f193ef924cdf8a485aee539c5"
+                                                          }}}
+
+             ;; build uberjar (compile java, clj files): clojure -R:bg -A:uberjar
+             :uberjar    {:main-opts ["-e" "(load-file,\"dev/src/build.clj\"),(build/clean),(build/uberjar)"]}
+
+             ;; compile java classes only: clojure -R:bg -A:javac
+             :javac      {:main-opts ["-e" "(load-file,\"dev/src/build.clj\"),(build/compile-java)"]}
+
+             ;; run on Java 9+ to build standalone app: clojure -R:bg -A:standalone
+             :standalone {:main-opts ["-e" "(load-file,\"dev/src/build.clj\"),(build/clean),(build/standalone)"]}
+             }
+ }
