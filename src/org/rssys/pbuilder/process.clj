@@ -23,6 +23,14 @@
            [clojure.data.xml.node Element]
            (java.nio.file Paths Path)))
 
+
+(defn clean
+  []
+  (clean/clean "target"
+    {;; By default, clean does not allow deleting folders outside the target directory,
+     ;; unless :allow-outside-target? is true
+     :allow-outside-target? false}))
+
 (defn- parse-xml
   [^Reader rdr]
   (let [roots (tree/seq-tree
@@ -67,7 +75,7 @@
 (defn- deps-content []
   (deps-reader/slurp-deps "deps.edn"))
 
-(defn- build-config
+(defn build-config
   "# create config for build process based on content of external file `pbuild.edn`.
 
   * Example:
