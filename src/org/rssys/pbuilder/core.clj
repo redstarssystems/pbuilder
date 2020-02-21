@@ -4,25 +4,22 @@
             [org.rssys.pbuilder.util :as u]
             [org.rssys.pbuilder.process :as p]))
 
+(def arguments ["help" "jar" "uberjar" "install" "deploy" "clean"])
+
 (def cli-options
   ;; An option with a required argument
   [["-f" "--file BUILDFILE" "Config for build "
     :default "pbuild.edn"]
    ["-h" "--help"]])
 
-(defn help
-  []
-  (let [cmds ["help" "jar" "uberjar" "clean"]
-        cmd-str (apply str (interpose "\n\t" cmds))]
-    (printf "usage: pbuilder <command> [configfile (default:pbuild.edn)]\ncommand:\n\t%s" cmd-str))
-  (flush))
 
 (defn -main
   "entry point to program."
   [& args]
   (println "Project builder – is a build tool for Clojure projects" u/version)
-  (println (parse-opts args cli-options))
- #_(let [config (if-let [c ()] "pbuild.edn")] (case (first args)
+ (let [opts (parse-opts args cli-options)
+       config (p/build-config (-> opts :options :file))]
+   (case (-> opts :arguments first)
      "help" (help)
      "jar" (p/build-jar config)))
 

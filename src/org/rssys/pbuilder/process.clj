@@ -200,8 +200,8 @@
         username  (when (= deploy-creds :password-prompt)
                     (badigeon.prompt/prompt "Username: "))
         password  (when (= deploy-creds :password-prompt)
-                    (badigeon.prompt/prompt-password "Password: "))
-        ]
+                    (badigeon.prompt/prompt-password "Password: "))]
+
     ;;  default to reading the credentials from ~/.m2/settings.xml. uncomment to prompt user credentials.
     (condp = deploy-creds
       :password-prompt (badigeon.deploy/deploy

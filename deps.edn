@@ -10,7 +10,7 @@
                                     :tag     "0.0.11"}}
 
  :aliases   {
-             :run        {:extra-paths ["resources"]
+             :run   {:extra-paths ["resources"]
                           :jvm-opts    []
                           :main-opts   ["--main" "org.rssys.pbuilder.core"]}
 
@@ -20,7 +20,9 @@
                                         hashp                {:mvn/version "0.1.1"}}
                           :jvm-opts    []
                           :extra-paths ["dev/src" "resources" "test"]
-                          :main-opts   ["--main" "nrepl.cmdline"]}
+                          :main-opts   ["-e" "(require,'[hashp.core])"
+                                        "-e" "(require,'[clojure.pprint,:refer,[pprint]])"
+                                        "--main" "nrepl.cmdline"]}
 
              :test       {:extra-deps  {lambdaisland/kaocha           {:mvn/version "0.0-573"}
                                         lambdaisland/kaocha-cloverage {:mvn/version "0.0-41"}
