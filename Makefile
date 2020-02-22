@@ -36,6 +36,10 @@ javac: ## Compile java classes
 	$(call cecho,"Compile java classes")
 	@clojure -A:run javac
 
+compile: ## Compile Clojure code
+	$(call cecho,"Compile clojure code")
+	@clojure -A:run compile
+
 jar: ## Build jar file (library)
 	$(call cecho,"Build jar file (library)")
 	@clojure -A:run jar
@@ -55,6 +59,10 @@ deploy: ## Deploy jar file to clojars
 conflicts: ## Show class conflicts (if any)
 	$(call cecho,"Show class conflicts (if any)")
 	@clojure -A:run conflicts
+
+standalone: ## Create standalone executable bundle with custom JDK 9+
+	$(call cecho,"Create standalone executable bundle with custom JDK 9+")
+	@clojure -A:run standalone
 
 help: ## Show help
 	 @grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

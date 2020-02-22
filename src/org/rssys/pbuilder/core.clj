@@ -21,11 +21,13 @@
         config (p/build-config (-> opts :options :file))]
     (case (-> opts :arguments first)
       "clean" (p/clean config)
+      "compile" (p/compile-clj config)
       "jar" (p/build-jar config)
       "uberjar" (p/build-uberjar config)
       "install" (p/local-install-jar config)
       "deploy" (p/deploy-jar config)
-      "conflicts" (p/print-conflict-details)))
+      "conflicts" (p/print-conflict-details)
+      "standalone" (p/build-standalone config)))
 
   (System/exit 0))
 

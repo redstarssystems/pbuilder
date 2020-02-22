@@ -13,12 +13,15 @@
             [badigeon.sign :as sign]
             [badigeon.deploy :as deploy]
             [badigeon.javac :as javac]
+            [badigeon.jlink :as jlink]
             [badigeon.prompt :as prompt]
             [badigeon.uberjar :as uberjar]
             [clojure.edn :as edn]
             [badigeon.classpath :as classpath]
             [badigeon.compile :as compile]
-            [badigeon.zip :as zip])
+            [badigeon.zip :as zip]
+            [badigeon.bundle :as bundle]
+            [badigeon.exec :as exec])
   (:import (java.io Reader)
            [clojure.data.xml.node Element]
            (java.nio.file Paths Path)))
@@ -246,7 +249,9 @@
   "# print class conflict details"
   []
   (println "The following classes has duplicates in multiple jars:")
-  (clojure.pprint/pprint (detect-class-conflicts)))
+  (doseq [item (detect-class-conflicts)]
+    (clojure.pprint/pprint item)
+    (println)))
 
 ;; taken from depstar by Sean Corfield
 (def ^:private exclude-patterns
@@ -275,7 +280,8 @@
                         :elide-meta              [:doc :file :line :added]
                         :direct-linking          true}
      ;; The classpath used during AOT compilation is built using the deps.edn file
-     :classpath        (classpath/make-classpath {:aliases []})}))
+     :classpath        (classpath/make-classpath {:aliases []})})
+  (println "Code compiled successfully to folder:" target-folder))
 
 (defn- copy-pom-properties [out-path group-id artifact-id pom-properties]
   (let [path (format "%s/META-INF/maven/%s/%s/pom.properties"
@@ -290,9 +296,15 @@
     (io/copy (io/file pom-file) (io/file path))))
 
 (defn build-uberjar
-  "# build uberjar."
+  "# build uberjar (executable jar file).
+
+ * Params:
+   `config` - map produced by `build-config` function.
+ "
   [{:keys [group-artifact-id group-id artifact-id artifact-version  omit-source? uberjar-filename
            warn-on-resource-conflicts? java-src-folder target-folder  main] :as config}]
+
+  (clean/clean target-folder {:allow-outside-target? false})
 
   ;; compile Java sources if present
   (when java-src-folder (compile-java config))
@@ -341,9 +353,95 @@
     ;; Zip the bundle into an uberjar
     (zip/zip out-path (if uberjar-filename (str target-folder "/" uberjar-filename) (str out-path ".jar")))))
 
+(defn build-standalone
+  "# build standalone executable bundle.
+
+ * Params:
+   `config` - map produced by `build-config` function.
+
+ * Warning: JDK9+ required.
+ "
+  [{:keys [target-folder java-source-path jlink-options main artifact-id artifact-version omit-source? group-id] :as config}]
+
+  (clean/clean target-folder {:allow-outside-target? false})
+
+  ;; if java sources are present then compile them
+  (when java-source-path
+    (compile-java config))
+
+  (compile-clj config)
+
+  (let [;; Automatically compute the bundle directory name based on the application name and version.
+        out-path (badigeon.bundle/make-out-path (symbol artifact-id) artifact-version)
+        default-jlink-options ["--strip-debug" "--no-man-pages" "--no-header-files" "--compress=2"]]
+
+    (if-not jlink-options
+      (println "no jlink-options in config, so default jlink options will be used:" default-jlink-options))
+
+    (badigeon.bundle/bundle out-path
+      {;; A map with the same format than deps.edn. :deps-map is used to resolve the project dependencies.
+       :deps-map             (deps-reader/slurp-deps "deps.edn")
+
+       ;; Alias keywords used while resolving the project resources and its dependencies. Default to no alias.
+       ;;:aliases              [:1.7 :bench :test]
+
+       ;; The dependencies to be excluded from the produced bundle.
+       ;; :excluded-libs        #{'org.clojure/clojure}
+
+       ;; Set to true to allow local dependencies and snapshot versions of maven dependencies.
+       :allow-unstable-deps? true
+       ;; The path of the folder where dependencies are copied, relative to the output folder.
+       :libs-path            "lib"})
+
+
+    ;; Requires a JDK9+
+    ;; Embeds a custom JRE runtime into the bundle.
+    (jlink/jlink out-path {;; The folder where the custom JRE is output, relative to the out-path.
+                           :jlink-path    "runtime"
+                           ;; The path where the java module are searched for.
+                           :module-path   (str (System/getProperty "java.home") "/jmods")
+                           ;; The modules to be used when creating the custom JRE
+                           :modules       ["java.base" "java.xml" "java.desktop" "java.management" "java.logging"]
+                           ;; The options of the jlink command
+                           :jlink-options (or jlink-options default-jlink-options )})
+
+    ;; Create a start script for the application
+    (bundle/bin-script out-path main
+      {;; Specify which OS type the line breaks/separators/file extensions should be formatted for.
+       :os-type       bundle/posix-like
+       ;; The path script is written to, relative to the out-path.
+       :script-path   "bin/run.sh"
+       ;; A header prefixed to the script content.
+       :script-header "#!/bin/sh\n\n"
+       ;; The java binary path used to start the application. Default to \"java\" or \"runtime/bin/java\" when a custom JRE runtime is found under the run directory.
+       :command       "runtime/bin/java"
+       ;; The classpath option used by the java command.
+       :classpath     ".:./lib/*"
+       ;; JVM options given to the java command.
+       :jvm-opts      ["-Xmx1g"]
+       ;; Parameters given to the application main method.
+       :args          [""]})
+
+    ;; Recursively walk the bundle files and delete all the Clojure source files
+    (when omit-source?
+      (uberjar/walk-directory
+        (str out-path "/" group-id)
+        (fn [dir f] (when (.endsWith (str f) ".clj")
+                      (java.nio.file.Files/delete f)))))
+
+    (exec/exec "chmod" {:proc-args ["+x" (format "%s/bin/run.sh" out-path)]})
+    ;; Zip the bundle
+    ;;(exec/exec "tar" {:proc-args ["cfz" (str out-path ".tar.gz") "-C" "target" (str artifact-id "-" artifact-version)]})
+
+    ;; Zip the bundle
+     (zip/zip out-path (str out-path ".zip"))
+    ))
+
 (comment
   (require '[hashp.core])
   (build-jar (build-config "pbuild.edn"))
   (local-install-jar (build-config "pbuild.edn"))
   (deploy-jar (build-config "pbuild.edn"))
-  (build-uberjar (build-config "pbuild.edn")))
+  (build-uberjar (build-config "pbuild.edn"))
+
+  (build-standalone (build-config "pbuild.edn")))
