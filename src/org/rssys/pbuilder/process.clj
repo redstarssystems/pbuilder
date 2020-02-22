@@ -25,11 +25,12 @@
 
 
 (defn clean
-  []
-  (clean/clean "target"
+  [config]
+  (clean/clean (:target-folder config)
     {;; By default, clean does not allow deleting folders outside the target directory,
      ;; unless :allow-outside-target? is true
-     :allow-outside-target? false}))
+     :allow-outside-target? false})
+  (println (:target-folder config) "clean complete."))
 
 (defn- parse-xml
   [^Reader rdr]

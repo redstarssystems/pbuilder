@@ -31,13 +31,5 @@
                           :jvm-opts    []
                           :main-opts   ["--main" "kaocha.runner"]}
 
-             ;; build uberjar (compile java, clj files): clojure -R:bg -A:uberjar
-             :uberjar    {:main-opts ["-e" "(load-file,\"dev/src/build.clj\"),(build/clean),(build/uberjar)"]}
-
-             ;; compile java classes only: clojure -R:bg -A:javac
-             :javac      {:main-opts ["-e" "(load-file,\"dev/src/build.clj\"),(build/compile-java)"]}
-
-             ;; run on Java 9+ to build standalone app: clojure -R:bg -A:standalone
-             :standalone {:main-opts ["-e" "(load-file,\"dev/src/build.clj\"),(build/clean),(build/standalone)"]}
              }
  }
