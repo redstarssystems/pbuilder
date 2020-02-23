@@ -22,7 +22,7 @@ endef
 
 clean: ## Clean project
 	$(call cecho,"Clean project")
-	@clojure -A:pbuilder clean -f pbuild.edn
+	@clojure -A:run clean -f pbuild.edn
 
 repl: ## Run Clojure REPL
 	$(call cecho,"Run Clojure REPL")
@@ -30,39 +30,39 @@ repl: ## Run Clojure REPL
 
 run: ## Run main function
 	$(call cecho,"Run main function")
-	@clojure -A:pbuilder
+	@clojure -A:run
 
 javac: ## Compile java classes
 	$(call cecho,"Compile java classes")
-	@clojure -A:pbuilder javac
+	@clojure -A:run javac
 
 compile: ## Compile Clojure code
 	$(call cecho,"Compile clojure code")
-	@clojure -A:pbuilder compile
+	@clojure -A:run compile
 
 jar: ## Build jar file (library)
 	$(call cecho,"Build jar file (library)")
-	@clojure -A:pbuilder jar
+	@clojure -A:run jar
 
 uberjar: ## Build ubejar file (executable)
 	$(call cecho,"Build uberjar file (executable)")
-	@clojure -A:pbuilder uberjar
+	@clojure -A:run uberjar
 
 install: ## Install jar file to local .m2
 	$(call cecho,"Install jar file to local .m2")
-	@clojure -A:pbuilder install
+	@clojure -A:run install
 
 deploy: ## Deploy jar file to clojars
 	$(call cecho,"Deploy jar file to clojars")
-	@clojure -A:pbuilder deploy
+	@clojure -A:run deploy
 
 conflicts: ## Show class conflicts (if any)
 	$(call cecho,"Show class conflicts (if any)")
-	@clojure -A:pbuilder conflicts
+	@clojure -A:run conflicts
 
 standalone: ## Create standalone executable bundle with custom JDK 9+
 	$(call cecho,"Create standalone executable bundle with custom JDK 9+")
-	@clojure -A:pbuilder standalone
+	@clojure -A:run standalone
 
 help: ## Show help
 	 @grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

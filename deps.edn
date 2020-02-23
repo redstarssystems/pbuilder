@@ -16,11 +16,6 @@
                         :jvm-opts    []
                         :main-opts   ["--main" "org.rssys.pbuilder.core"]}
 
-             :pbuilder {:extra-deps {org.rssys/pbuilder {:mvn/version "0.1.0-SNAPSHOT"}}
-                        :jvm-opts   []
-                        :main-opts  ["--main" "org.rssys.pbuilder.core"]}
-
-
              :repl     {:extra-deps  {nrepl                {:mvn/version "0.6.0"}
                                       healthsamurai/matcho {:mvn/version "0.3.3"}
                                       hashp                {:mvn/version "0.1.1"}}
