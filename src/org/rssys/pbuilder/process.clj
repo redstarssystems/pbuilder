@@ -194,6 +194,7 @@
     `config` - map produced by `build-config` function.
   "
   [{:keys [jar-name group-artifact-id artifact-version deploy-signed? deploy-creds deploy-repo] :as config}]
+  (clean/clean target-folder {:allow-outside-target? false})
   (build-jar config)
   (let [artifacts [{:file-path jar-name :extension "jar"}
                    {:file-path "pom.xml" :extension "pom"}]
