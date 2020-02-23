@@ -2,6 +2,7 @@
 
 
 Project builder for Clojure, baseon on Badigeon, has  functionality:
+
 * Compile java sources
 * AOT compile Clojure sources
 * Package a project as a jar file
