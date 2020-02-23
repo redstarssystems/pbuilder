@@ -48,6 +48,30 @@ Add at root of your project file pbuild.edn. Here is an example for this project
  }
 ----
 
+Add to :aliases section of deps.edn pbuilder dependency (see latest version):
+
+[source,clojure]
+----
+
+             :pbuilder {:extra-deps {org.rssys/pbuilder {:mvn/version "0.1.0-SNAPSHOT"}}
+                        :jvm-opts   []
+                        :main-opts  ["--main" "org.rssys.pbuilder.core"]}
+
+----
+
+Then run `clojure -A:pbuilder <command>`.
+
+List of available commands:
+
+* clean         - clear target folder
+* javac         - compile java sources
+* compile       - compile clojure code
+* jar           - build jar file (as library) 
+* uberjar       - build standalone executable jar file (uberjar)
+* install       - install jar file (library) to local .m2
+* deploy        - deploy jar file (library) to clojars.org
+* conflicts     - show class conflicts (same name class in multiple jar files)
+* standalone    - build standalone bundle uberjar + custom JRE using JDK 9+ jlink.
 
 
 == License
