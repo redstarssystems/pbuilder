@@ -150,7 +150,7 @@
             _               (when-not (zero? (:exit result))
                               (throw (ex-info "git commit result:" result)))
             _               (println "adding tag...")
-            result          (sh/sh "git" "tag" new-version)
+            result          (sh/sh "git" "tag" "-a" "-m" new-version new-version)
             _               (when-not (zero? (:exit result))
                               (throw (ex-info "git tag result:" result)))
             _               (println "building & deploying new artifact version...")
