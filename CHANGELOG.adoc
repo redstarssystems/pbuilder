@@ -1,5 +1,9 @@
 == Changelog
 
+=== v0.1.2
+
+* fixed bump function: bump from minor to patch by default.
+
 === v0.1.1
 
 * added bump version functionality

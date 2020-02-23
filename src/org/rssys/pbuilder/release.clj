@@ -155,7 +155,7 @@
                               (throw (ex-info "git tag result:" result)))
             _               (println "building & deploying new artifact version...")
             _               (p/deploy-jar config)
-            new-version-dev (bump-version (:artifact-version config) "minor")
+            new-version-dev (bump-version (:artifact-version config))
             _               (change-artifact-version config new-version-dev build-filename)
             config          (p/build-config build-filename)
             _               (println "changing artifact version to dev...")
@@ -185,7 +185,7 @@
   (def old-file (slurp "pbuild.edn"))
   (def new-version (bump-version (:artifact-version config) (or "release")))
   (assert-commited?)
-  (bump-version "0.1.0-SNAPSHOT" "release")
+  (bump-version "0.1.0-SNAPSHOT")
   (bump-version (bump-version "0.2.1-beta1-SNAPSHOT" "release"))
   (bump-version (bump-version "1.0.0-SNAPSHOT" "beta" "release"))
 
