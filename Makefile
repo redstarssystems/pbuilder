@@ -64,6 +64,13 @@ standalone: ## Create standalone executable bundle with custom JDK 9+
 	$(call cecho,"Create standalone executable bundle with custom JDK 9+")
 	@clojure -A:run standalone
 
+release: ## Release artifact. Second parameter may be: major minor patch alpha beta rc qualifier release
+	$(call cecho,"Release artifact")
+	@clojure -A:run release $(filter-out $@,$(MAKECMDGOALS))
+
 help: ## Show help
 	 @grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
+# these lines need to work with command line params.
+%:
+	@:

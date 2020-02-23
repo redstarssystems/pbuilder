@@ -2,9 +2,8 @@
   (:gen-class)
   (:require [clojure.tools.cli :refer [parse-opts]]
             [org.rssys.pbuilder.util :as u]
-            [org.rssys.pbuilder.process :as p]))
-
-(def arguments ["clean" "javac" "compile" "jar" "uberjar" "install" "deploy" "conflicts" "standalone"])
+            [org.rssys.pbuilder.process :as p]
+            [org.rssys.pbuilder.release :as r]))
 
 (def cli-options
   ;; An option with a required argument
@@ -28,7 +27,9 @@
       "install" (p/local-install-jar config)
       "deploy" (p/deploy-jar config)
       "conflicts" (p/print-conflict-details)
-      "standalone" (p/build-standalone config)))
+      "standalone" (p/build-standalone config)
+      "release" (r/run-release config (-> opts :arguments second) (-> opts :options :file)) ;; major minor patch alpha beta rc qualifier release
+      ))
 
   (System/exit 0))
 

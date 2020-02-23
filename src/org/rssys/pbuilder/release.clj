@@ -1,9 +1,10 @@
 (ns org.rssys.pbuilder.release
   (:require [clojure.java.shell :as sh]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [org.rssys.pbuilder.process :as p]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; the code below taken from Leiningen
+;; the code below is taken from Leiningen
 ;; https://github.com/technomancy/leiningen/blob/master/src/leiningen/release.clj
 
 (def ^:dynamic *level* nil)
@@ -21,7 +22,7 @@
       (map #(Integer/parseInt %))
       (zipmap [:major :minor :patch])
       (merge {:qualifier qualifier
-              :snapshot snapshot}))))
+              :snapshot  snapshot}))))
 
 (defn parse-semantic-version [version-string]
   "Create map representing the given version string. Aborts with exit code 1
@@ -67,18 +68,18 @@
       :major {:major (inc major) :minor 0 :patch 0 :qualifier nil :snapshot "SNAPSHOT"}
       :minor {:major major :minor (inc minor) :patch 0 :qualifier nil :snapshot "SNAPSHOT"}
       :patch {:major major :minor minor :patch (inc patch) :qualifier nil :snapshot "SNAPSHOT"}
-      :alpha {:major major :minor minor :patch patch
+      :alpha {:major     major :minor minor :patch patch
               :qualifier (next-qualifier "alpha" qualifier)
-              :snapshot "SNAPSHOT"}
-      :beta {:major major :minor minor :patch patch
+              :snapshot  "SNAPSHOT"}
+      :beta {:major     major :minor minor :patch patch
              :qualifier (next-qualifier "beta" qualifier)
-             :snapshot "SNAPSHOT"}
-      :rc {:major major :minor minor :patch patch
+             :snapshot  "SNAPSHOT"}
+      :rc {:major     major :minor minor :patch patch
            :qualifier (next-qualifier "RC" qualifier)
-           :snapshot "SNAPSHOT"}
-      :qualifier {:major major :minor minor :patch patch
+           :snapshot  "SNAPSHOT"}
+      :qualifier {:major     major :minor minor :patch patch
                   :qualifier (next-qualifier qualifier)
-                  :snapshot "SNAPSHOT"}
+                  :snapshot  "SNAPSHOT"}
       :release (merge {:major major :minor minor :patch patch}
                  (if snapshot
                    {:qualifier qualifier :snapshot nil}
@@ -97,8 +98,8 @@
 ;; end of Leiningen code
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn check-commited?
-  "# check for all changes are commited
+(defn assert-commited?
+  "# check for all changes are commited using git VCS
 
     * Params:
       `config` - map produced by `build-config` function.
@@ -108,9 +109,56 @@
       `false` - not all changes are commited.
     "
   []
+  (println "checking for all changes are commited... (git only)")
   (let [result (sh/sh "git" "status" "--porcelain")]
     (-> result :out str/blank?)))
 
+(defn change-artifact-version
+  "# change artifact version in pbuild file.
+
+  * Warning: modifies external file (default `pbuild.edn`)."
+  [config new-version build-filename]
+  (let [old-file    (slurp build-filename)
+        new-content (str/replace old-file (:artifact-version config) new-version)
+        _           (spit build-filename new-content)]
+    (println "file:" build-filename "modified. New artifact version is:" new-version)))
+
+(defn run-release
+  "# run release cycle for library
+     1) check all changes are commited.
+     2) bump version
+     3) commit changes
+     4) set tag
+     5) compile & deploy jar
+     6) set new dev minor version
+     7) commit changes"
+
+  [config level build-filename]
+  (if assert-commited?
+    (let [new-version     (bump-version (:artifact-version config) (or level "release"))
+          _               (change-artifact-version config new-version build-filename)
+          result          (sh/sh "git" "commit" "-m" new-version)
+          _               (println "git commit result:" (clojure.pprint/pprint result))
+          result          (sh/sh "git" "tag" new-version)
+          _               (println "git tag result:" (clojure.pprint/pprint result))
+          _               (p/deploy-jar config)
+          new-version-dev (bump-version (:artifact-version config) "minor")
+          _               (change-artifact-version config new-version-dev build-filename)
+          result          (sh/sh "git" "commit" "-m" new-version-dev)
+          _               (println "git commit new dev version result:" (clojure.pprint/pprint result))
+          result          (sh/sh "git" "push")
+          _               (println "git push result:" (clojure.pprint/pprint result))]
+      (println "release complete."))
+    (println "error: not all changes are commited!")))
+
 (comment
-  (check-commited?)
-  (bump-version "0.1.0-SNAPSHOT" "release"))
+
+  (def config (org.rssys.pbuilder.process/build-config "pbuild.edn"))
+  (def old-file (slurp "pbuild.edn"))
+  (def new-version (bump-version (:artifact-version config) (or "release")))
+  (assert-commited?)
+  (bump-version "0.1.0-SNAPSHOT" "release")
+  (bump-version (bump-version "0.2.1-SNAPSHOT" "release"))
+  (bump-version (bump-version "1.0.0-SNAPSHOT" "minor" "release"))
+
+  )

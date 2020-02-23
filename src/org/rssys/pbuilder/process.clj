@@ -188,14 +188,13 @@
     (println "Successfully installed" jar-name "to local repo:" local-repo)))
 
 (defn deploy-jar
-  "# deploy compiled jar library to clojars using ~/.m2/settings.xml credentials or password prompt.
+  "# compile & deploy compiled jar to clojars using ~/.m2/settings.xml credentials or password prompt.
 
   * Params:
     `config` - map produced by `build-config` function.
-
-  * Warning: this function expects produced result of `build-jar` function as input value.
   "
   [{:keys [jar-name group-artifact-id artifact-version deploy-signed? deploy-creds deploy-repo] :as config}]
+  (build-jar config)
   (let [artifacts [{:file-path jar-name :extension "jar"}
                    {:file-path "pom.xml" :extension "pom"}]
         artifacts (if deploy-signed?
