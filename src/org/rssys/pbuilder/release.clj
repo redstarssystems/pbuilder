@@ -125,7 +125,7 @@
 
 (defn run-release
   "# run release cycle for library
-     1) check all changes are commited.
+     1) check all changes are committed.
      2) bump version
      3) commit changes
      4) set tag
