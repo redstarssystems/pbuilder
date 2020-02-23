@@ -4,7 +4,7 @@
             [org.rssys.pbuilder.util :as u]
             [org.rssys.pbuilder.process :as p]))
 
-(def arguments ["clean" "javac" "jar" "uberjar" "install" "deploy"])
+(def arguments ["clean" "javac" "compile" "jar" "uberjar" "install" "deploy" "conflicts" "standalone"])
 
 (def cli-options
   ;; An option with a required argument
@@ -21,6 +21,7 @@
         config (p/build-config (-> opts :options :file))]
     (case (-> opts :arguments first)
       "clean" (p/clean config)
+      "javac" (p/compile-java config)
       "compile" (p/compile-clj config)
       "jar" (p/build-jar config)
       "uberjar" (p/build-uberjar config)

@@ -443,5 +443,5 @@
   (local-install-jar (build-config "pbuild.edn"))
   (deploy-jar (build-config "pbuild.edn"))
   (build-uberjar (build-config "pbuild.edn"))
-
+  (sign/sign-one {:file-path "Makefile"})
   (build-standalone (build-config "pbuild.edn")))

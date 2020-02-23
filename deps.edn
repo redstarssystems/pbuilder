@@ -3,35 +3,39 @@
 
  :paths     ["src" "resources" "target/classes"]
 
- :deps      {org.clojure/clojure   {:mvn/version "1.10.1"}
-             org.clojure/tools.cli {:mvn/version "1.0.194"}
-             badigeon/badigeon     {:git/url "https://github.com/EwenG/badigeon.git"
-                                    :sha     "1edf7ae465db870ec0066f28226edb9b04873b70"
-                                    :tag     "0.0.11"}
+ :deps      {org.clojure/clojure    {:mvn/version "1.10.1"}
+             org.clojure/tools.cli  {:mvn/version "1.0.194"}
+             badigeon/badigeon      {:git/url "https://github.com/EwenG/badigeon.git"
+                                     :sha     "1edf7ae465db870ec0066f28226edb9b04873b70"
+                                     :tag     "0.0.11"}
 
              org.slf4j/slf4j-simple {:mvn/version "1.7.30"}}
 
  :aliases   {
-             :run   {:extra-paths ["resources"]
-                          :jvm-opts    []
-                          :main-opts   ["--main" "org.rssys.pbuilder.core"]}
+             :run      {:extra-paths ["resources"]
+                        :jvm-opts    []
+                        :main-opts   ["--main" "org.rssys.pbuilder.core"]}
+
+             :pbuilder {:extra-deps {org.rssys/pbuilder {:mvn/version "0.1.0-SNAPSHOT"}}
+                        :jvm-opts   []
+                        :main-opts  ["--main" "org.rssys.pbuilder.core"]}
 
 
-             :repl       {:extra-deps  {nrepl                {:mvn/version "0.6.0"}
-                                        healthsamurai/matcho {:mvn/version "0.3.3"}
-                                        hashp                {:mvn/version "0.1.1"}}
-                          :jvm-opts    []
-                          :extra-paths ["dev/src" "resources" "test"]
-                          :main-opts   ["-e" "(require,'[hashp.core])"
-                                        "-e" "(require,'[clojure.pprint,:refer,[pprint]])"
-                                        "--main" "nrepl.cmdline"]}
+             :repl     {:extra-deps  {nrepl                {:mvn/version "0.6.0"}
+                                      healthsamurai/matcho {:mvn/version "0.3.3"}
+                                      hashp                {:mvn/version "0.1.1"}}
+                        :jvm-opts    []
+                        :extra-paths ["dev/src" "resources" "test"]
+                        :main-opts   ["-e" "(require,'[hashp.core])"
+                                      "-e" "(require,'[clojure.pprint,:refer,[pprint]])"
+                                      "--main" "nrepl.cmdline"]}
 
-             :test       {:extra-deps  {lambdaisland/kaocha           {:mvn/version "0.0-573"}
-                                        lambdaisland/kaocha-cloverage {:mvn/version "0.0-41"}
-                                        healthsamurai/matcho          {:mvn/version "0.3.3"}}
-                          :extra-paths ["resources" "test" "test/resources"]
-                          :jvm-opts    []
-                          :main-opts   ["--main" "kaocha.runner"]}
+             :test     {:extra-deps  {lambdaisland/kaocha           {:mvn/version "0.0-573"}
+                                      lambdaisland/kaocha-cloverage {:mvn/version "0.0-41"}
+                                      healthsamurai/matcho          {:mvn/version "0.3.3"}}
+                        :extra-paths ["resources" "test" "test/resources"]
+                        :jvm-opts    []
+                        :main-opts   ["--main" "kaocha.runner"]}
 
              }
  }
