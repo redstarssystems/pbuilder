@@ -1,7 +1,7 @@
 == pbuilder
 
 
-Project builder for Clojure, baseon on Badigeon, has  functionality:
+Project builder for Clojure, based on <a href="https://github.com/EwenG/badigeon">Badigeon</a>, has  a functionality:
 
 * Compile java sources
 * AOT compile Clojure sources
