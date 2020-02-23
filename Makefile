@@ -64,7 +64,7 @@ standalone: ## Create standalone executable bundle with custom JDK 9+
 	$(call cecho,"Create standalone executable bundle with custom JDK 9+")
 	@clojure -A:run standalone
 
-release: ## Release artifact. Second parameter may be: major minor patch alpha beta rc qualifier release
+release: ## Release artifact.
 	$(call cecho,"Release artifact")
 	@clojure -A:run release $(filter-out $@,$(MAKECMDGOALS))
 
