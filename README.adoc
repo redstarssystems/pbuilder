@@ -24,7 +24,7 @@ Add to :aliases section of deps.edn pbuilder dependency (see latest version abov
 [source,clojure]
 ----
 
-     :pbuilder {:extra-deps {org.rssys/pbuilder {:mvn/version "0.1.0"}}
+     :pbuilder {:extra-deps {org.rssys/pbuilder {:mvn/version "0.1.1"}}
                 :jvm-opts   []
                 :main-opts  ["--main" "org.rssys.pbuilder.core"]}
 
@@ -49,7 +49,7 @@ Here is an example for this project:
  :target-folder               "target"
  :group-id                    "org.rssys"
  :artifact-id                 "pbuilder"
- :artifact-version            "0.1.0-SNAPSHOT"
+ :artifact-version            "0.1.1-SNAPSHOT"
  :main                        "org.rssys.pbuilder.core"
  :omit-source?                true
  ;;:uberjar-filename            "pbuilder.jar"
