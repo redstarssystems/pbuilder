@@ -1,5 +1,9 @@
 == Changelog
 
+=== v0.1.1
+
+* added bump version functionality
+
 === v.0.1.0
 
 * initial release
