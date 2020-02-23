@@ -22,7 +22,7 @@ endef
 
 clean: ## Clean project
 	$(call cecho,"Clean project")
-	@clojure -A:run clean -f pbuild.edn
+	@clojure -A:run clean
 
 repl: ## Run Clojure REPL
 	$(call cecho,"Run Clojure REPL")
@@ -66,7 +66,11 @@ standalone: ## Create standalone executable bundle with custom JDK 9+
 
 release: ## Release artifact.
 	$(call cecho,"Release artifact")
-	@clojure -A:run release $(filter-out $@,$(MAKECMDGOALS))
+	@clojure -A:run release
+
+bump: ## Bump version artifact in build file.
+	$(call cecho,"Bump version artifact in build file.")
+	@clojure -A:run bump $(filter-out $@,$(MAKECMDGOALS))
 
 help: ## Show help
 	 @grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
