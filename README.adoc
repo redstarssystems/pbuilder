@@ -41,7 +41,7 @@ Here is an example for this project:
  :main                        "org.rssys.pbuilder.core"
  :omit-source?                true
  ;;:uberjar-filename            "pbuilder.jar"
- :description                 "Project builder – is a build tool for Clojure projects."
+ :description                 "Project builder is a build tool for Clojure projects with tools.deps."
  :url                         "https://github.com/redstarssystems/pbuilder.git"
  :scm                         {:url "https://github.com/redstarssystems/pbuilder.git"}
  :license                     {:name "EPL-2.0"
@@ -54,7 +54,7 @@ Add to :aliases section of deps.edn pbuilder dependency (see latest version):
 [source,clojure]
 ----
 
-             :pbuilder {:extra-deps {org.rssys/pbuilder {:mvn/version "0.1.0-SNAPSHOT"}}
+             :pbuilder {:extra-deps {org.rssys/pbuilder {:mvn/version "0.1.0"}}
                         :jvm-opts   []
                         :main-opts  ["--main" "org.rssys.pbuilder.core"]}
 

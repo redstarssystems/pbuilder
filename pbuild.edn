@@ -15,7 +15,7 @@
  :main                        "org.rssys.pbuilder.core"
  :omit-source?                true
  ;;:uberjar-filename            "pbuilder.jar"
- :description                 "Project builder – is a build tool for Clojure projects."
+ :description                 "Project builder is a build tool for Clojure projects with tools.deps."
  :url                         "https://github.com/redstarssystems/pbuilder.git"
  :scm                         {:url "https://github.com/redstarssystems/pbuilder.git"}
  :license                     {:name "EPL-2.0"
