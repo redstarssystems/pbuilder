@@ -133,12 +133,12 @@
      6) set new dev minor version
      7) commit changes"
 
-  [config level build-filename]
+  [config  build-filename]
   (if (assert-commited?)
     (do
       (println "ok.")
       (let [_               (println "changing artifact version...")
-            new-version     (bump-version (:artifact-version config) (or level "release"))
+            new-version     (bump-version (:artifact-version config) "release")
             _               (change-artifact-version config new-version build-filename)
             config          (p/build-config build-filename)
             _               (println "adding new version to git..." new-version)
@@ -173,6 +173,12 @@
         (println "release complete.")))
     (println "error: not all changes are committed!")))
 
+(defn bump-version-file
+  "# bump artifact version in build file"
+  [config build-file level]
+  (let [bumped-ver (bump-version (:artifact-version config) level)]
+    (change-artifact-version config bumped-ver build-file)))
+
 (comment
 
   (def config (org.rssys.pbuilder.process/build-config "pbuild.edn"))
@@ -180,7 +186,7 @@
   (def new-version (bump-version (:artifact-version config) (or "release")))
   (assert-commited?)
   (bump-version "0.1.0-SNAPSHOT" "release")
-  (bump-version (bump-version "0.2.1-SNAPSHOT" "release"))
-  (bump-version (bump-version "1.0.0-SNAPSHOT" "minor" "release"))
+  (bump-version (bump-version "0.2.1-beta1-SNAPSHOT" "release"))
+  (bump-version (bump-version "1.0.0-SNAPSHOT" "beta" "release"))
 
   )

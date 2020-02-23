@@ -28,7 +28,8 @@
       "deploy" (p/deploy-jar config)
       "conflicts" (p/print-conflict-details)
       "standalone" (p/build-standalone config)
-      "release" (r/run-release config (-> opts :arguments second) (-> opts :options :file)) ;; major minor patch alpha beta rc qualifier release
+      "release" (r/run-release config (-> opts :options :file))
+      "bump" (r/bump-version-file config (-> opts :options :file) (second (:arguments opts)))   ;; should be one of: major minor patch alpha beta rc qualifier
       ))
 
   (System/exit 0))
