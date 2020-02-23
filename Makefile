@@ -4,7 +4,7 @@ CURRENT_TIME = $(shell date)
 
 .EXPORT_ALL_VARIABLES:
 
-.PHONY:	clean repl run javac jar uberjar install deploy help
+.PHONY:	clean repl run javac jar uberjar install deploy conflicts standalone release bump help
 
 YELLOW_PRINT = \033[0;33m
 GREEN_PRINT = \033[0;92m
@@ -70,7 +70,7 @@ release: ## Release artifact.
 
 bump: ## Bump version artifact in build file.
 	$(call cecho,"Bump version artifact in build file.")
-	@clojure -A:run bump $(filter-out $@,$(MAKECMDGOALS))
+	@clojure -A:run bump $(filter-out $@,$(MAKECMDGOALS)) # parameter should be one of: major minor patch alpha beta rc qualifier
 
 help: ## Show help
 	 @grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
