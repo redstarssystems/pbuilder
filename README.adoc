@@ -19,7 +19,8 @@ has the following functionality:
 
 == Usage
 
-Add at root of your project file pbuild.edn. Here is an example for this project:
+Add at root of your project file pbuild.edn. Keys :main and :omit-source? are valid for uberjar project only.
+Here is an example for this project:
 
 [source,clojure]
 ----
