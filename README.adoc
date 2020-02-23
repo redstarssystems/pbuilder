@@ -75,7 +75,7 @@ List of available commands:
 * conflicts     - show class conflicts (same name class in multiple jar files)
 * standalone    - build standalone bundle uberjar + custom JRE using JDK 9+ jlink.
 * release       - release artifact.
-* bump          - bump version artifact in build file. E.g: `clojure -A:pbuilder bump beta`
+* bump          - bump version artifact in build file. E.g: `clojure -A:pbuilder bump beta`.
 
 === Release artifact
 
