@@ -15,7 +15,7 @@
 (defn -main
   "entry point to program."
   [& args]
-  (println "Project builder – is a build tool for Clojure projects" u/version)
+  (println "Project builder" u/version "is a build tool for Clojure projects with tools.deps\n")
   (let [opts   (parse-opts args cli-options)
         config (p/build-config (-> opts :options :file))]
     (case (-> opts :arguments first)

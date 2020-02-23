@@ -134,10 +134,12 @@
      7) commit changes"
 
   [config level build-filename]
-  (if assert-commited?
+  (if (assert-commited?)
     (let [new-version     (bump-version (:artifact-version config) (or level "release"))
           _               (change-artifact-version config new-version build-filename)
           config          (p/build-config build-filename)
+          result          (sh/sh "git" "add" build-filename)
+          _               (println "git add result:" (clojure.pprint/pprint result))
           result          (sh/sh "git" "commit" "-m" new-version)
           _               (println "git commit result:" (clojure.pprint/pprint result))
           result          (sh/sh "git" "tag" new-version)
@@ -146,6 +148,8 @@
           new-version-dev (bump-version (:artifact-version config) "minor")
           _               (change-artifact-version config new-version-dev build-filename)
           config          (p/build-config build-filename)
+          result          (sh/sh "git" "add" build-filename)
+          _               (println "git add result:" (clojure.pprint/pprint result))
           result          (sh/sh "git" "commit" "-m" new-version-dev)
           _               (println "git commit new dev version result:" (clojure.pprint/pprint result))
           result          (sh/sh "git" "push")
