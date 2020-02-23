@@ -171,7 +171,7 @@
             _               (when-not (zero? (:exit result))
                               (throw (ex-info "git push dev result:" result)))]
         (println "release complete.")))
-    (println "error: not all changes are commited!")))
+    (println "error: not all changes are committed!")))
 
 (comment
 
