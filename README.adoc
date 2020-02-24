@@ -24,6 +24,7 @@ has the following functionality:
 Easy way to use pbuilder is to use templates: 
 
 * https://github.com/redstarssystems/lib-template[Library template]
+* https://github.com/redstarssystems/app-template[Application template]
 
 === Direct usage
 
