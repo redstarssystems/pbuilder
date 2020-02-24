@@ -11,7 +11,7 @@ GREEN_PRINT = \033[0;92m
 NORMAL_TEXT = \033[0m
 
 define cecho
-	@echo '------------------------------------------'
+	@echo '-----------------------------------------------'
 	@echo -e "$(GREEN_PRINT)$(CURRENT_TIME)"
 	@echo -e "$(YELLOW_PRINT)"
 	@echo -e $(1)
