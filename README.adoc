@@ -86,9 +86,18 @@ Distributed under the Eclipse Public License 2.0 or (at your option) any later v
 
 === Third party
 
+==== Badigeon
+
 Project builder uses Badigeon software https://github.com/EwenG/badigeon
 
 Copyright 2019 Ewen Grosjean.
 
 The use and distribution terms for this software are covered by the Eclipse Public License 1.0 
-(http://opensource.org/licenses/eclipse-1.0) 
+(http://opensource.org/licenses/eclipse-1.0)
+
+==== Leiningen
+
+Project builder uses some code from Leiningen https://github.com/technomancy/leiningen
+
+Source Copyright © 2009-2018 Phil Hagelberg, Alex Osborne, Dan Larkin, and contributors. 
+Distributed under the Eclipse Public License, the same as Clojure uses. See the file COPYING.
