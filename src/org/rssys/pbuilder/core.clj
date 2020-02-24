@@ -1,7 +1,6 @@
 (ns org.rssys.pbuilder.core
   (:gen-class)
   (:require [clojure.tools.cli :refer [parse-opts]]
-            [org.rssys.pbuilder.util :as u]
             [org.rssys.pbuilder.process :as p]
             [org.rssys.pbuilder.release :as r]))
 
@@ -15,7 +14,7 @@
 (defn -main
   "entry point to program."
   [& args]
-  (println "Project builder" u/version "is a build tool for Clojure projects with tools.deps\n")
+  (println "Project builder is a build tool for Clojure projects with tools.deps\n")
   (let [opts   (parse-opts args cli-options)
         config (p/build-config (-> opts :options :file))]
     (case (-> opts :arguments first)
