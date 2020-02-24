@@ -29,8 +29,10 @@
       "standalone" (p/build-standalone config)
       "release" (r/run-release config (-> opts :options :file))
       "bump" (r/bump-version-file config (-> opts :options :file) (second (:arguments opts)))   ;; should be one of: major minor patch alpha beta rc qualifier
-      ))
+      (do (println "error: no parameters.")
+          (println "valid parameters: clean, javac, compile, jar, uberjar, install, deploy, conflicts, standalone, release, bump."))))
 
+  (flush)
   (System/exit 0))
 
 (comment
