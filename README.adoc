@@ -74,12 +74,9 @@ List of available commands:
 * deploy        - deploy jar file (library) to clojars.org
 * conflicts     - show class conflicts (same name class in multiple jar files)
 * standalone    - build standalone bundle uberjar + custom JRE using JDK 9+ jlink.
-* release       - release artifact.
-* bump          - bump version artifact in build file. E.g: `clojure -A:pbuilder bump beta`.
-
-=== Release artifact
-
-To release artifact run `clojure -A:pbuild release`.
+* release       - release artifact. To release artifact run `clojure -A:pbuild release`.
+* bump          - bump version artifact in build file. E.g: `clojure -A:pbuilder bump beta`. Parameter should be
+one of: major, minor, patch, alpha, beta, rc, qualifier
 
 == License
 
