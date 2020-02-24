@@ -39,7 +39,7 @@ Add to :aliases section of deps.edn pbuilder dependency (see latest version abov
 
 ----
 
-Add at root of your project file pbuild.edn. Structure for pbuild.edn see in example.
+Add at root of your project file `pbuild.edn`. Structure for `pbuild.edn` see in example.
 Keys :main and :omit-source? are valid for uberjar project only.
 Here is an example for this project:
 
