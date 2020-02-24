@@ -19,6 +19,14 @@ has the following functionality:
 
 == Usage
 
+=== Templates
+
+Easy way to use pbuilder is to use templates: 
+
+* https://github.com/redstarssystems/lib-template[Library template]
+
+=== Direct usage
+
 Add to :aliases section of deps.edn pbuilder dependency (see latest version above):
 
 [source,clojure]
