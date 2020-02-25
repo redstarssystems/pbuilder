@@ -3,7 +3,7 @@ image:https://img.shields.io/clojars/v/org.rssys/pbuilder.svg[clojars,link=https
 == pbuilder
 
 
-Project builder for Clojure projects with tools.deps, based on https://github.com/EwenG/badigeon[Badigeon], 
+Project builder is a high level wrapper for https://github.com/EwenG/badigeon[Badigeon], 
 has the following functionality:
 
 * Compile java sources
@@ -21,12 +21,12 @@ has the following functionality:
 
 === Templates
 
-Easy way to use pbuilder is to use templates: 
+Easiest way to use pbuilder is to use it in templates: 
 
 * https://github.com/redstarssystems/lib-template[Library template]
 * https://github.com/redstarssystems/app-template[Application template]
 
-=== Direct usage
+=== Manual configuration
 
 Add to :aliases section of deps.edn pbuilder dependency (see latest version above):
 
@@ -39,9 +39,9 @@ Add to :aliases section of deps.edn pbuilder dependency (see latest version abov
 
 ----
 
-Add at root of your project file `pbuild.edn`. Structure for `pbuild.edn` see in example.
+Add file `pbuild.edn` to project root. Structure for `pbuild.edn` is shown below.
 Keys :main and :omit-source? are valid for uberjar project only.
-Here is an example for this project:
+Here is an example of structure `pbuild.edn` for this project:
 
 [source,clojure]
 ----
@@ -70,11 +70,11 @@ Here is an example for this project:
  }
 ----
 
-Then run `clojure -A:pbuilder <command>`.
+To run pbuilder use `clojure -A:pbuilder <command>`.
 
 List of available commands:
 
-* clean         - clear target folder
+* clean         - clean target folder
 * javac         - compile java sources
 * compile       - compile clojure code
 * jar           - build jar file (as library) 
