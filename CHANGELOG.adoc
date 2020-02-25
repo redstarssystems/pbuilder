@@ -1,6 +1,6 @@
 == Changelog
 
-=== v0.1.5
+=== Next release
 
 Fixed:
 
@@ -14,7 +14,7 @@ Fixed:
 
 Changed:
 
-* no use git add . instead of git add pbuild.edn
+* now used `git add .` instead of `git add pbuild.edn`
 
 === v0.1.3
 
