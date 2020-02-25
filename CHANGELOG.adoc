@@ -7,7 +7,7 @@ Fixed:
 * in standalone mode, :omit-source? true  is not work. 
 
 
-=== [0.1.4] 2020-02-25
+=== [0.1.4] - 2020-02-25
 
 Fixed:
 
@@ -17,7 +17,7 @@ Changed:
 
 * now used `git add .` instead of `git add pbuild.edn`
 
-=== [0.1.3] 2020-02-24
+=== [0.1.3] - 2020-02-24
 
 Added:
 
@@ -29,18 +29,18 @@ Fixed:
 * call main without parameters
 * pbuilder doesn't work without badigeon dependency & tools.deps
 
-=== [0.1.2] 2020-02-24
+=== [0.1.2] - 2020-02-24
 
 Changed:
 
 * bump function: bump from minor to patch by default.
 
-=== [0.1.1] 2020-02-24
+=== [0.1.1] - 2020-02-24
 
 Added:
 
 * bump version functionality
 
-=== [0.1.0] 2020-02-24
+=== [0.1.0] - 2020-02-24
 
 * initial release
