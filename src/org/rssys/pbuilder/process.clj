@@ -425,7 +425,7 @@
     ;; Recursively walk the bundle files and delete all the Clojure source files
     (when omit-source?
       (uberjar/walk-directory
-        (str out-path "/" group-id)
+        out-path
         (fn [dir f] (when (.endsWith (str f) ".clj")
                       (java.nio.file.Files/delete f)))))
 

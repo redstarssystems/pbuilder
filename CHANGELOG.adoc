@@ -1,5 +1,11 @@
 == Changelog
 
+=== v0.1.5
+
+Fixed:
+
+* in standalone mode, :omit-source? true  is not work. 
+
 === v0.1.4
 
 Fixed:
