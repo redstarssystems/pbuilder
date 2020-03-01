@@ -355,7 +355,9 @@
           manifest)))
 
     ;; Zip the bundle into an uberjar
-    (zip/zip out-path (if uberjar-filename (str target-folder "/" uberjar-filename) (str out-path ".jar")))))
+    (let [out-uberjar-name (if uberjar-filename (str target-folder "/" uberjar-filename) (str out-path ".jar"))]
+      (zip/zip out-path out-uberjar-name)
+      (println "Successfully created uberjar file: " out-uberjar-name))))
 
 (defn build-standalone
   "# build standalone executable bundle.
