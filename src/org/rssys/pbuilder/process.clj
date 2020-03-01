@@ -301,7 +301,7 @@
  * Params:
    `config` - map produced by `build-config` function.
  "
-  [{:keys [group-artifact-id group-id artifact-id artifact-version  omit-source? uberjar-filename
+  [{:keys [group-artifact-id group-id artifact-id artifact-version  omit-source? uberjar-filename excluded-libs
            warn-on-resource-conflicts? java-src-folder target-folder  main] :as config}]
 
   (clean/clean target-folder {:allow-outside-target? false})
@@ -319,7 +319,7 @@
        ;; Alias keywords used while resolving the project resources and its dependencies. Default to no alias.
        :aliases                     []
        ;; The dependencies to be excluded from the produced bundle.
-       ;;:excluded-libs #{'org.clojure/clojure}
+       :excluded-libs               (or excluded-libs #{})
        ;; Set to true to allow local dependencies and snapshot versions of maven dependencies.
        :allow-unstable-deps?        true
        ;; When set to true and resource conflicts are found, then a warning is printed to *err*
@@ -361,7 +361,8 @@
 
  * Warning: JDK9+ required.
  "
-  [{:keys [target-folder java-source-path jlink-options main artifact-id artifact-version omit-source? group-id] :as config}]
+  [{:keys [target-folder java-source-path jlink-options main artifact-id artifact-version omit-source?
+           excluded-libs standalone-run-script] :as config}]
 
   (clean/clean target-folder {:allow-outside-target? false})
 
@@ -386,7 +387,7 @@
        ;;:aliases              [:1.7 :bench :test]
 
        ;; The dependencies to be excluded from the produced bundle.
-       ;; :excluded-libs        #{'org.clojure/clojure}
+       :excluded-libs               (or excluded-libs #{})
 
        ;; Set to true to allow local dependencies and snapshot versions of maven dependencies.
        :allow-unstable-deps? true
@@ -406,21 +407,26 @@
                            :jlink-options (or jlink-options default-jlink-options )})
 
     ;; Create a start script for the application
-    (bundle/bin-script out-path main
-      {;; Specify which OS type the line breaks/separators/file extensions should be formatted for.
-       :os-type       bundle/posix-like
-       ;; The path script is written to, relative to the out-path.
-       :script-path   "bin/run.sh"
-       ;; A header prefixed to the script content.
-       :script-header "#!/bin/sh\n\n"
-       ;; The java binary path used to start the application. Default to \"java\" or \"runtime/bin/java\" when a custom JRE runtime is found under the run directory.
-       :command       "runtime/bin/java"
-       ;; The classpath option used by the java command.
-       :classpath     ".:./lib/*"
-       ;; JVM options given to the java command.
-       :jvm-opts      ["-Xmx1g"]
-       ;; Parameters given to the application main method.
-       :args          [""]})
+    (if standalone-run-script
+      (let [run-fname (io/file (str out-path) "bin" "run.sh")]
+        (io/make-parents run-fname)
+        (println "using content of" standalone-run-script "as run script...")
+        (io/copy (io/file standalone-run-script) run-fname))
+      (bundle/bin-script out-path main
+       {;; Specify which OS type the line breaks/separators/file extensions should be formatted for.
+        :os-type       bundle/posix-like
+        ;; The path script is written to, relative to the out-path.
+        :script-path   "bin/run.sh"
+        ;; A header prefixed to the script content.
+        :script-header "#!/bin/sh\n\n"
+        ;; The java binary path used to start the application. Default to \"java\" or \"runtime/bin/java\" when a custom JRE runtime is found under the run directory.
+        :command       "runtime/bin/java"
+        ;; The classpath option used by the java command.
+        :classpath     ".:./lib/*"
+        ;; JVM options given to the java command.
+        :jvm-opts      ["-Xmx1g"]
+        ;; Parameters given to the application main method.
+        :args          [""]}))
 
     ;; Recursively walk the bundle files and delete all the Clojure source files
     (when omit-source?
@@ -430,11 +436,11 @@
                       (java.nio.file.Files/delete f)))))
 
     (exec/exec "chmod" {:proc-args ["+x" (format "%s/bin/run.sh" out-path)]})
-    ;; Zip the bundle
-    ;;(exec/exec "tar" {:proc-args ["cfz" (str out-path ".tar.gz") "-C" "target" (str artifact-id "-" artifact-version)]})
+    ;; tar.gz the bundle with preserving file rights
+    (exec/exec "tar" {:proc-args ["cfz" (str out-path ".tar.gz") "-C" "target" (str artifact-id "-" artifact-version)]})
 
     ;; Zip the bundle
-     (zip/zip out-path (str out-path ".zip"))
+    ;; (zip/zip out-path (str out-path ".zip"))
     ))
 
 (comment

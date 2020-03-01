@@ -2,6 +2,11 @@
 
 === Next release
 
+Added:
+
+* :excluded-libs added to pbuild.edn for uberjar and standalone mode, that allows exclude libraries from final build.
+* :standalone-run-script allows to provide customized run script content when using standalone mode
+
 Fixed:
 
 * in standalone mode, :omit-source? true  is not work. 

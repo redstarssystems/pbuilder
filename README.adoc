@@ -2,9 +2,7 @@ image:https://img.shields.io/clojars/v/org.rssys/pbuilder.svg[clojars,link=https
 
 == pbuilder
 
-
-Project builder is a high level wrapper for https://github.com/EwenG/badigeon[Badigeon], 
-has the following functionality:
+Project builder is a high level wrapper for https://github.com/EwenG/badigeon[Badigeon], has the following functionality:
 
 * Compile java sources
 * AOT compile Clojure sources
@@ -16,12 +14,13 @@ has the following functionality:
 * Package a project as an uberjar file
 * Produce a custom JRE runtime using jlink
 
-
 == Usage
+
+*Warning:* not tested on Windows! Make sure that unix tools such as chmod, make, tar are available in the %PATH%.  
 
 === Templates
 
-Easiest way to use pbuilder is to use it in templates: 
+Easiest way to use pbuilder is to use it in templates:
 
 * https://github.com/redstarssystems/lib-template[Library template]
 * https://github.com/redstarssystems/app-template[Application template]
@@ -33,14 +32,15 @@ Add to :aliases section of deps.edn pbuilder dependency (see latest version abov
 [source,clojure]
 ----
 
-     :pbuilder {:extra-deps {org.rssys/pbuilder {:mvn/version "0.1.4"}}
+     :pbuilder {:extra-deps {org.rssys/pbuilder {:mvn/version "0.1.5"}}
                 :jvm-opts   []
                 :main-opts  ["--main" "org.rssys.pbuilder.core"]}
 
 ----
 
-Add file `pbuild.edn` to project root. Structure for `pbuild.edn` is shown below.
-Keys :main and :omit-source? are valid for uberjar project only.
+Add file `pbuild.edn` to project root.
+Structure for `pbuild.edn` is shown below.
+Keys :main, :standalone-run-script, :excluded-libs and :omit-source? are valid for uberjar/standalone projects only.
 Here is an example of structure `pbuild.edn` for this project:
 
 [source,clojure]
@@ -58,7 +58,7 @@ Here is an example of structure `pbuild.edn` for this project:
  :target-folder               "target"
  :group-id                    "org.rssys"
  :artifact-id                 "pbuilder"
- :artifact-version            "0.1.1-SNAPSHOT"
+ :artifact-version            "0.1.5-SNAPSHOT"
  :main                        "org.rssys.pbuilder.core"
  :omit-source?                true
  ;;:uberjar-filename            "pbuilder.jar"
@@ -67,6 +67,8 @@ Here is an example of structure `pbuild.edn` for this project:
  :scm                         {:url "https://github.com/redstarssystems/pbuilder.git"}
  :license                     {:name "EPL-2.0"
                                :url  "https://www.eclipse.org/legal/epl-2.0/"}
+ :excluded-libs               #{}                           ;; e.g #{ org.clojure/clojure my.org/lib01}
+ ;;:standalone-run-script       "./my-custom-script.sh"
  }
 ----
 
@@ -74,18 +76,18 @@ To run pbuilder use `clojure -A:pbuilder <command>`.
 
 List of available commands:
 
-* clean         - clean target folder
-* javac         - compile java sources
-* compile       - compile clojure code
-* jar           - build jar file (as library) 
-* uberjar       - build standalone executable jar file (uberjar)
-* install       - install jar file (library) to local .m2
-* deploy        - deploy jar file (library) to clojars.org
-* conflicts     - show class conflicts (same name class in multiple jar files)
-* standalone    - build standalone bundle uberjar + custom JRE using JDK 9+ jlink.
-* release       - release artifact. To release artifact run `clojure -A:pbuild release`.
-* bump          - bump version artifact in build file. E.g: `clojure -A:pbuilder bump beta`. Parameter should be
-one of: major, minor, patch, alpha, beta, rc, qualifier
+* clean - clean target folder
+* javac - compile java sources
+* compile - compile clojure code
+* jar - build jar file (as library)
+* uberjar - build standalone executable jar file (uberjar)
+* install - install jar file (library) to local .m2
+* deploy - deploy jar file (library) to clojars.org
+* conflicts - show class conflicts (same name class in multiple jar files)
+* standalone - build standalone bundle uberjar + custom JRE using JDK 9+ jlink.
+* release - release artifact.
+* bump - bump version artifact in build file. E.g: `clojure -A:pbuilder bump beta`.
+Parameter should be one of: major, minor, patch, alpha, beta, rc, qualifier
 
 == License
 
@@ -101,12 +103,12 @@ Project builder uses Badigeon software https://github.com/EwenG/badigeon
 
 Copyright 2019 Ewen Grosjean.
 
-The use and distribution terms for this software are covered by the Eclipse Public License 1.0 
-(http://opensource.org/licenses/eclipse-1.0)
+The use and distribution terms for this software are covered by the Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0)
 
 ==== Leiningen
 
 Project builder uses some code from Leiningen https://github.com/technomancy/leiningen
 
-Source Copyright © 2009-2018 Phil Hagelberg, Alex Osborne, Dan Larkin, and contributors. 
-Distributed under the Eclipse Public License, the same as Clojure uses. See the file COPYING.
+Source Copyright © 2009-2018 Phil Hagelberg, Alex Osborne, Dan Larkin, and contributors.
+Distributed under the Eclipse Public License, the same as Clojure uses.
+See the file COPYING.
