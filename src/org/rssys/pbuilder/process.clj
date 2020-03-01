@@ -164,7 +164,7 @@
      :mvn/repos               {(:id deploy-repo) {:url (:url deploy-repo)}}
      :exclusion-predicate     badigeon.jar/default-exclusion-predicate
      :allow-all-dependencies? true
-     :manifest                (merge {"Created-By" (str "pbuilder " u/version)} manifest)})
+     :manifest                (merge {"Created-By" "pbuilder"} manifest)})
 
   (add-extra-stuff->pom config)
   (println "Successfully created jar file: " jar-name))
@@ -351,7 +351,7 @@
         (merge {:Group-Id         group-id
                 :Artifact-Id      artifact-id
                 :Artifact-Version artifact-version}
-          {"Created-By" (str "pbuilder " u/version)}
+          {"Created-By" "pbuilder"}
           manifest)))
 
     ;; Zip the bundle into an uberjar

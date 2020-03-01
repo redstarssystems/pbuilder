@@ -3,6 +3,8 @@
 
 (def build-config-filename "pbuild.edn")
 
+;; these functions allow you to detect current version of your project
+
 (defmacro project-version
   "# Get current project version
    * Returns:
