@@ -1,5 +1,11 @@
 == Changelog
 
+=== [Next release] 
+
+Changed:
+
+* now uberjar goal prints the name of uberjar file at the end of process
+
 === [0.1.6] - 2020-03-01
 
 Added:
