@@ -32,7 +32,7 @@ Add to :aliases section of deps.edn pbuilder dependency (see latest version abov
 [source,clojure]
 ----
 
-     :pbuilder {:extra-deps {org.rssys/pbuilder {:mvn/version "0.1.5"}}
+     :pbuilder {:extra-deps {org.rssys/pbuilder {:mvn/version "0.1.6"}}
                 :jvm-opts   []
                 :main-opts  ["--main" "org.rssys.pbuilder.core"]}
 
