@@ -22,4 +22,5 @@
                                :url  "https://www.eclipse.org/legal/epl-2.0/"}
  :excluded-libs               #{}                           ;; e.g #{ org.clojure/clojure my.org/lib01}
  ;;:standalone-run-script       "./my-custom-script.sh"
+ ;;:manifest                    {"Multi-Release" "true"} ;; here you may override MANIFEST.MF
  }

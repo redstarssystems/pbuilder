@@ -21,7 +21,8 @@
             [badigeon.compile :as compile]
             [badigeon.zip :as zip]
             [badigeon.bundle :as bundle]
-            [badigeon.exec :as exec])
+            [badigeon.exec :as exec]
+            [org.rssys.pbuilder.util :as u])
   (:import (java.io Reader)
            [clojure.data.xml.node Element]
            (java.nio.file Paths Path)))
@@ -153,7 +154,7 @@
 
   * Warning: target folder and pom.xml will be overwritten.
   "
-  [{:keys [target-folder jar-name group-artifact-id artifact-version deploy-repo] :as config}]
+  [{:keys [target-folder jar-name group-artifact-id artifact-version deploy-repo manifest] :as config}]
   (when (.exists (io/file "pom.xml")) (io/delete-file "pom.xml"))
   (clean/clean target-folder {:allow-outside-target? false})
   (make-pom config)
@@ -162,7 +163,8 @@
     {:out-path                jar-name
      :mvn/repos               {(:id deploy-repo) {:url (:url deploy-repo)}}
      :exclusion-predicate     badigeon.jar/default-exclusion-predicate
-     :allow-all-dependencies? true})
+     :allow-all-dependencies? true
+     :manifest                (merge {"Created-By" (str "pbuilder " u/version)} manifest)})
 
   (add-extra-stuff->pom config)
   (println "Successfully created jar file: " jar-name))
@@ -301,8 +303,8 @@
  * Params:
    `config` - map produced by `build-config` function.
  "
-  [{:keys [group-artifact-id group-id artifact-id artifact-version  omit-source? uberjar-filename excluded-libs
-           warn-on-resource-conflicts? java-src-folder target-folder  main] :as config}]
+  [{:keys [group-artifact-id group-id artifact-id artifact-version omit-source? uberjar-filename excluded-libs
+           warn-on-resource-conflicts? java-src-folder target-folder main manifest] :as config}]
 
   (clean/clean target-folder {:allow-outside-target? false})
 
@@ -343,12 +345,14 @@
           (println "excluded:" (str f))
           (java.nio.file.Files/delete f))))
 
-    ;; Output a MANIFEST.MF file defining 'badigeon.main as the main namespace
+    ;; Output a MANIFEST.MF file
     (spit (str (badigeon.utils/make-path out-path "META-INF/MANIFEST.MF"))
       (jar/make-manifest main
-        {:Group-Id         group-id
-         :Artifact-Id      artifact-id
-         :Artifact-Version artifact-version}))
+        (merge {:Group-Id         group-id
+                :Artifact-Id      artifact-id
+                :Artifact-Version artifact-version}
+          {"Created-By" (str "pbuilder " u/version)}
+          manifest)))
 
     ;; Zip the bundle into an uberjar
     (zip/zip out-path (if uberjar-filename (str target-folder "/" uberjar-filename) (str out-path ".jar")))))
@@ -373,7 +377,7 @@
   (compile-clj config)
 
   (let [;; Automatically compute the bundle directory name based on the application name and version.
-        out-path (badigeon.bundle/make-out-path (symbol artifact-id) artifact-version)
+        out-path              (badigeon.bundle/make-out-path (symbol artifact-id) artifact-version)
         default-jlink-options ["--strip-debug" "--no-man-pages" "--no-header-files" "--compress=2"]]
 
     (if-not jlink-options
@@ -387,7 +391,7 @@
        ;;:aliases              [:1.7 :bench :test]
 
        ;; The dependencies to be excluded from the produced bundle.
-       :excluded-libs               (or excluded-libs #{})
+       :excluded-libs        (or excluded-libs #{})
 
        ;; Set to true to allow local dependencies and snapshot versions of maven dependencies.
        :allow-unstable-deps? true
@@ -404,7 +408,7 @@
                            ;; The modules to be used when creating the custom JRE
                            :modules       ["java.base" "java.xml" "java.desktop" "java.management" "java.logging"]
                            ;; The options of the jlink command
-                           :jlink-options (or jlink-options default-jlink-options )})
+                           :jlink-options (or jlink-options default-jlink-options)})
 
     ;; Create a start script for the application
     (if standalone-run-script
@@ -413,20 +417,20 @@
         (println "using content of" standalone-run-script "as run script...")
         (io/copy (io/file standalone-run-script) run-fname))
       (bundle/bin-script out-path main
-       {;; Specify which OS type the line breaks/separators/file extensions should be formatted for.
-        :os-type       bundle/posix-like
-        ;; The path script is written to, relative to the out-path.
-        :script-path   "bin/run.sh"
-        ;; A header prefixed to the script content.
-        :script-header "#!/bin/sh\n\n"
-        ;; The java binary path used to start the application. Default to \"java\" or \"runtime/bin/java\" when a custom JRE runtime is found under the run directory.
-        :command       "runtime/bin/java"
-        ;; The classpath option used by the java command.
-        :classpath     ".:./lib/*"
-        ;; JVM options given to the java command.
-        :jvm-opts      ["-Xmx1g"]
-        ;; Parameters given to the application main method.
-        :args          [""]}))
+        {;; Specify which OS type the line breaks/separators/file extensions should be formatted for.
+         :os-type       bundle/posix-like
+         ;; The path script is written to, relative to the out-path.
+         :script-path   "bin/run.sh"
+         ;; A header prefixed to the script content.
+         :script-header "#!/bin/sh\n\n"
+         ;; The java binary path used to start the application. Default to \"java\" or \"runtime/bin/java\" when a custom JRE runtime is found under the run directory.
+         :command       "runtime/bin/java"
+         ;; The classpath option used by the java command.
+         :classpath     ".:./lib/*"
+         ;; JVM options given to the java command.
+         :jvm-opts      ["-Xmx1g"]
+         ;; Parameters given to the application main method.
+         :args          [""]}))
 
     ;; Recursively walk the bundle files and delete all the Clojure source files
     (when omit-source?

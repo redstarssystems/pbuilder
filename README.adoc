@@ -58,7 +58,7 @@ Here is an example of structure `pbuild.edn` for this project:
  :target-folder               "target"
  :group-id                    "org.rssys"
  :artifact-id                 "pbuilder"
- :artifact-version            "0.1.5-SNAPSHOT"
+ :artifact-version            "0.1.6-SNAPSHOT"
  :main                        "org.rssys.pbuilder.core"
  :omit-source?                true
  ;;:uberjar-filename            "pbuilder.jar"
@@ -69,6 +69,7 @@ Here is an example of structure `pbuild.edn` for this project:
                                :url  "https://www.eclipse.org/legal/epl-2.0/"}
  :excluded-libs               #{}                           ;; e.g #{ org.clojure/clojure my.org/lib01}
  ;;:standalone-run-script       "./my-custom-script.sh"
+ ;;:manifest                    {"Multi-Release" "true"}    ;; here you may override MANIFEST.MF
  }
 ----
 
