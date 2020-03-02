@@ -1,10 +1,17 @@
 == Changelog
 
-=== [Next release] 
+=== [0.1.7] - 2020-03-02 
+
+Fixed:
+
+* :omit-source? option has serious bug: deletes all source files but should delete files only inside 
+current project folder. 
+* added :omit-source-ns as list of top level namespaces where src files should be deleted in uberjar 
+mode when :omit-source? is true.
 
 Changed:
 
-* now uberjar goal prints the name of uberjar file at the end of process
+* now uberjar goal prints the name of uberjar file at the end of the process
 
 === [0.1.6] - 2020-03-01
 

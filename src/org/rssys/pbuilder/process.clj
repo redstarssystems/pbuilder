@@ -304,7 +304,7 @@
    `config` - map produced by `build-config` function.
  "
   [{:keys [group-artifact-id group-id artifact-id artifact-version omit-source? uberjar-filename excluded-libs
-           warn-on-resource-conflicts? java-src-folder target-folder main manifest] :as config}]
+           warn-on-resource-conflicts? java-src-folder target-folder main manifest omit-source-ns] :as config}]
 
   (clean/clean target-folder {:allow-outside-target? false})
 
@@ -332,10 +332,14 @@
 
     ;; Recursively walk the bundle files and delete all the Clojure source files if omit-source? is true
     (when omit-source?
-      (uberjar/walk-directory
-        out-path
-        (fn [dir f] (when (.endsWith (str f) ".clj")
-                      (java.nio.file.Files/delete f)))))
+      (if-not (empty? omit-source-ns)
+        (doseq [clear-ns omit-source-ns]
+          (println "delete source files in:" (str out-path "/" (str/replace clear-ns #"\." "/")))
+          (uberjar/walk-directory
+            (str out-path "/" (str/replace clear-ns #"\." "/"))
+           (fn [dir f] (when (.endsWith (str f) ".clj")
+                         (java.nio.file.Files/delete f)))))
+        (throw (ex-info ":omit-source-ns vector should not be empty if :omit-source? is true" {:omit-source-ns omit-source-ns}))))
 
     ;; Recursively walk the bundle files and delete all the excluded file patterns
     (uberjar/walk-directory

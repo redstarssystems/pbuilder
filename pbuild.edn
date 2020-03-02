@@ -14,6 +14,8 @@
  :artifact-version            "0.1.7-SNAPSHOT"
  :main                        "org.rssys.pbuilder.core"
  :omit-source?                true
+ ;; list of top level namespaces where src files should be deleted in uberjar mode when :omit-source? is true.
+ :omit-source-ns           ["org.rssys.pbuilder"]
  ;;:uberjar-filename            "pbuilder.jar"
  :description                 "Project builder is a build tool for Clojure projects with tools.deps."
  :url                         "https://github.com/redstarssystems/pbuilder.git"
