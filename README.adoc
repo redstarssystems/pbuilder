@@ -16,7 +16,8 @@ Project builder is a high level wrapper for https://github.com/EwenG/badigeon[Ba
 
 == Usage
 
-*Warning:* not tested on Windows! Make sure that unix tools such as chmod, make, tar are available in the %PATH%.  
+*Warning:* not tested on Windows!
+Make sure that unix tools such as chmod, make, tar are available in the %PATH%.
 
 === Templates
 
@@ -32,7 +33,7 @@ Add to :aliases section of deps.edn pbuilder dependency (see latest version abov
 [source,clojure]
 ----
 
-     :pbuilder {:extra-deps {org.rssys/pbuilder {:mvn/version "0.1.7"}}
+     :pbuilder {:extra-deps {org.rssys/pbuilder {:mvn/version "0.1.8"}}
                 :jvm-opts   []
                 :main-opts  ["--main" "org.rssys.pbuilder.core"]}
 
@@ -58,11 +59,9 @@ Here is an example of structure `pbuild.edn` for this project:
  :target-folder               "target"
  :group-id                    "org.rssys"
  :artifact-id                 "pbuilder"
- :artifact-version            "0.1.7-SNAPSHOT"
+ :artifact-version            "0.1.8-SNAPSHOT"
  :main                        "org.rssys.pbuilder.core"
  ;;:omit-source?                true
- ;; list of top level namespaces where src files should be deleted in uberjar mode when :omit-source? is true.
- ;;:omit-source-ns           ["org.rssys.pbuilder"]
  ;;:uberjar-filename            "pbuilder.jar"
  :description                 "Project builder is a build tool for Clojure projects with tools.deps."
  :url                         "https://github.com/redstarssystems/pbuilder.git"

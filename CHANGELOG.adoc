@@ -1,5 +1,12 @@
 == Changelog
 
+=== [0.1.8] - 2020-03-03
+
+Changed:
+
+* :omit-source-ns is removed cause :omit-source? option had no bug. BREAKING CHANGE between 0.1.7 only!
+* now delete not only .clj, but .cljc, .java files too when :omit-source? is true
+
 === [0.1.7] - 2020-03-02 
 
 Fixed:
