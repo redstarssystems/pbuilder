@@ -241,7 +241,10 @@
    (detect-class-conflicts {:deps-map (deps-reader/slurp-deps "deps.edn")}))
   ([{:keys [deps-map aliases] :as params}]
    (let [res-conflicts  (#'badigeon.uberjar/find-resource-conflicts* params)
-         conflicts-info (mapv (fn [e] (when (str/ends-with? (key e) ".class")
+         conflicts-info (mapv (fn [e] (when (or
+                                              (str/ends-with? (key e) ".clj")
+                                              (str/ends-with? (key e) ".cljc")
+                                              (str/ends-with? (key e) ".class"))
                                         {:item (key e)
                                          :jars (vec (sort (map #(.getName %) (val e))))}))
                           res-conflicts)]
@@ -335,8 +338,12 @@
       (println "delete source files in:" (str out-path))
       (uberjar/walk-directory
         out-path
-        (fn [dir f] (when (or (.endsWith (str f) ".cljc") (.endsWith (str f) ".clj") (.endsWith (str f) ".java"))
-                      (java.nio.file.Files/delete f)))))
+        (fn [dir f] (when-not (str/includes? (str f) "clojure/core") ;; do not delete files in clojure.core
+                      (when (or
+                              (.endsWith (str f) ".cljc")
+                              (.endsWith (str f) ".clj")
+                              (.endsWith (str f) ".java"))
+                        (java.nio.file.Files/delete f))))))
 
     ;; Recursively walk the bundle files and delete all the excluded file patterns
     (uberjar/walk-directory
@@ -381,10 +388,13 @@
 
   (let [;; Automatically compute the bundle directory name based on the application name and version.
         out-path              (badigeon.bundle/make-out-path (symbol artifact-id) artifact-version)
-        default-jlink-options ["--strip-debug" "--no-man-pages" "--no-header-files" "--compress=2"]]
+        default-jlink-options ["--strip-debug" "--no-man-pages" "--no-header-files" "--compress=2"
+                               "--add-modules" "java.base,java.xml,java.desktop,java.management,java.logging,java.sql"]]
 
     (if-not jlink-options
-      (println "no jlink-options in config, so default jlink options will be used:" default-jlink-options))
+      (println "no :jlink-options in config, so default :jlink-options will be used:" (pr-str default-jlink-options))
+      (println "using :jlink-options from config:" (pr-str jlink-options))
+      )
 
     (badigeon.bundle/bundle out-path
       {;; A map with the same format than deps.edn. :deps-map is used to resolve the project dependencies.
@@ -409,7 +419,7 @@
                            ;; The path where the java module are searched for.
                            :module-path   (str (System/getProperty "java.home") "/jmods")
                            ;; The modules to be used when creating the custom JRE
-                           :modules       ["java.base" "java.xml" "java.desktop" "java.management" "java.logging"]
+                           :modules       ["java.base"]
                            ;; The options of the jlink command
                            :jlink-options (or jlink-options default-jlink-options)})
 
@@ -440,8 +450,12 @@
       (println "delete source files in:" (str out-path))
       (uberjar/walk-directory
         out-path
-        (fn [dir f] (when (or (.endsWith (str f) ".cljc") (.endsWith (str f) ".clj") (.endsWith (str f) ".java"))
-                      (java.nio.file.Files/delete f)))))
+        (fn [dir f] (when-not (str/includes? (str f) "clojure/core") ;; do not delete files in clojure.core
+                      (when (or
+                              (.endsWith (str f) ".cljc")
+                              (.endsWith (str f) ".clj")
+                              (.endsWith (str f) ".java"))
+                        (java.nio.file.Files/delete f))))))
 
     (exec/exec "chmod" {:proc-args ["+x" (format "%s/bin/run.sh" out-path)]})
     ;; tar.gz the bundle with preserving file rights
@@ -449,6 +463,8 @@
 
     ;; Zip the bundle
     ;; (zip/zip out-path (str out-path ".zip"))
+
+    (println "Successfully created standalone bundle at: " (str out-path))
     ))
 
 (comment

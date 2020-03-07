@@ -1,5 +1,15 @@
 == Changelog
 
+=== [0.1.9 Next] - 2020-03-07
+
+Changed:
+
+* default jlink options now has "--add-modules" "java.base,java.xml,java.desktop,java.management,java.logging,java.sql"
+
+Fixed:
+
+* spec don't work when :omit-source? is true. Now do not delete source files in clojure.core ns
+
 === [0.1.8] - 2020-03-03
 
 Changed:

@@ -23,4 +23,6 @@
  :excluded-libs               #{}                           ;; e.g #{ org.clojure/clojure my.org/lib01}
  ;;:standalone-run-script       "./my-custom-script.sh"
  ;;:manifest                    {"Multi-Release" "true"} ;; here you may override MANIFEST.MF
+ ;; :jlink-options is used when building standalone bundle
+ ;; :jlink-options               ["--strip-debug" "--no-man-pages" "--no-header-files" "--compress=2" "--add-modules" "java.sql"]
  }

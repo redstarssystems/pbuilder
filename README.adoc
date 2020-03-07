@@ -33,7 +33,7 @@ Add to :aliases section of deps.edn pbuilder dependency (see latest version abov
 [source,clojure]
 ----
 
-     :pbuilder {:extra-deps {org.rssys/pbuilder {:mvn/version "0.1.8"}}
+     :pbuilder {:extra-deps {org.rssys/pbuilder {:mvn/version "0.1.9"}}
                 :jvm-opts   []
                 :main-opts  ["--main" "org.rssys.pbuilder.core"]}
 
@@ -59,7 +59,7 @@ Here is an example of structure `pbuild.edn` for this project:
  :target-folder               "target"
  :group-id                    "org.rssys"
  :artifact-id                 "pbuilder"
- :artifact-version            "0.1.8-SNAPSHOT"
+ :artifact-version            "0.1.9-SNAPSHOT"
  :main                        "org.rssys.pbuilder.core"
  ;;:omit-source?                true
  ;;:uberjar-filename            "pbuilder.jar"
@@ -71,6 +71,8 @@ Here is an example of structure `pbuild.edn` for this project:
  :excluded-libs               #{}                           ;; e.g #{ org.clojure/clojure my.org/lib01}
  ;;:standalone-run-script       "./my-custom-script.sh"
  ;;:manifest                    {"Multi-Release" "true"}    ;; here you may override MANIFEST.MF
+ ;; :jlink-options is used when building standalone bundle
+ ;; :jlink-options               ["--strip-debug" "--no-man-pages" "--no-header-files" "--compress=2" "--add-modules" "java.base,java.sql"]
  }
 ----
 
