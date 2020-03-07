@@ -11,7 +11,7 @@
  :target-folder               "target"
  :group-id                    "org.rssys"
  :artifact-id                 "pbuilder"
- :artifact-version            "0.1.9"
+ :artifact-version            "0.1.10-SNAPSHOT"
  :main                        "org.rssys.pbuilder.core"
  :omit-source?                true
  ;;:uberjar-filename            "pbuilder.jar"
