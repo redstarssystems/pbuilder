@@ -125,11 +125,13 @@
     "
   [{:keys [java-src-folder target-folder javac-options] :as config}]
   ;; Compile java sources under the java-src-folder directory
-  (when java-src-folder
+  (println "Compiling java sources in folder:" java-src-folder " with javac options:" javac-options)
+  (if java-src-folder
     (javac/javac java-src-folder {;; Emit class files to the target/classes directory
                                   :compile-path  (str target-folder "/" "classes")
                                   ;; Additional options used by the javac command
-                                  :javac-options javac-options})))
+                                  :javac-options javac-options})
+    (println "Error! Can't find java sources in pbuilder config (key :java-src-folder).")))
 
 (defn make-pom
   "# create pom file in current folder.

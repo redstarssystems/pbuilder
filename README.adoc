@@ -17,29 +17,32 @@ Project builder is a high level wrapper for https://github.com/EwenG/badigeon[Ba
 == Usage
 
 *Warning:* not tested on Windows!
-Make sure that unix tools such as chmod, make, tar are available in the %PATH%.
+Make sure that unix tools such as chmod, make, tar are available in Windows in the %PATH%.
 
 === Templates
 
-Easiest way to use pbuilder is to use it in templates:
+Easiest way to use pbuilder is to take a ready template:
 
 * https://github.com/redstarssystems/lib-template[Library template]
 * https://github.com/redstarssystems/app-template[Application template]
+* https://github.com/redstarssystems/web-template[Web template]
 
 === Manual configuration
 
-Add to :aliases section of deps.edn pbuilder dependency (see latest version above):
+Also pbuilder can be configured manually.
+
+First, add to :aliases section of deps.edn a new pbuilder dependency (see latest version above):
 
 [source,clojure]
 ----
 
-     :pbuilder {:extra-deps {org.rssys/pbuilder {:mvn/version "0.1.9"}}
+     :pbuilder {:extra-deps {org.rssys/pbuilder {:mvn/version "0.1.10"}}
                 :jvm-opts   []
                 :main-opts  ["--main" "org.rssys.pbuilder.core"]}
 
 ----
 
-Add file `pbuild.edn` to project root.
+Second, create a file `pbuild.edn` in the project root.
 Structure for `pbuild.edn` is shown below.
 Keys :main, :standalone-run-script, :excluded-libs and :omit-source? are valid for uberjar/standalone projects only.
 Here is an example of structure `pbuild.edn` for this project:
@@ -47,7 +50,7 @@ Here is an example of structure `pbuild.edn` for this project:
 [source,clojure]
 ----
 {
- ;;:java-source-paths "java-src"
+ ;;:java-src-folder "java-src"
  ;;:javac-options     ["-target" "1.8" "-source" "1.8" "-Xlint:-options"]
 
  :warn-on-resource-conflicts? true
@@ -59,7 +62,7 @@ Here is an example of structure `pbuild.edn` for this project:
  :target-folder               "target"
  :group-id                    "org.rssys"
  :artifact-id                 "pbuilder"
- :artifact-version            "0.1.9-SNAPSHOT"
+ :artifact-version            "0.1.11-SNAPSHOT"
  :main                        "org.rssys.pbuilder.core"
  ;;:omit-source?                true
  ;;:uberjar-filename            "pbuilder.jar"

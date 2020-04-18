@@ -1,5 +1,15 @@
 == Changelog
 
+=== [0.1.10] - 2020-04-18
+
+Addedd:
+
+* print javac verbose info when compiling java sources.
+
+Fixed:
+
+* javac expected different key from pbuild.edn. Now :java-src-folder is used.
+
 === [0.1.9 Next] - 2020-03-07
 
 Changed:
