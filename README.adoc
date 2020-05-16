@@ -36,7 +36,7 @@ First, add to :aliases section of deps.edn a new pbuilder dependency (see latest
 [source,clojure]
 ----
 
-     :pbuilder {:extra-deps {org.rssys/pbuilder {:mvn/version "0.1.10"}}
+     :pbuilder {:extra-deps {org.rssys/pbuilder {:mvn/version "0.1.11"}}
                 :jvm-opts   []
                 :main-opts  ["--main" "org.rssys.pbuilder.core"]}
 
