@@ -47,6 +47,8 @@ Structure for `pbuild.edn` is shown below.
 Keys :main, :standalone-run-script, :excluded-libs and :omit-source? are valid for uberjar/standalone projects only.
 Here is an example of structure `pbuild.edn` for this project:
 
+*Note:* The `juxt/aero` library is supported
+
 [source,clojure]
 ----
 {
@@ -62,7 +64,7 @@ Here is an example of structure `pbuild.edn` for this project:
  :target-folder               "target"
  :group-id                    "org.rssys"
  :artifact-id                 "pbuilder"
- :artifact-version            "0.1.11-SNAPSHOT"
+ :artifact-version            "0.1.11-SNAPSHOT"             ;; or e.g. #env ARTIFACT_VERSION
  :main                        "org.rssys.pbuilder.core"
  ;;:omit-source?                true
  ;;:uberjar-filename            "pbuilder.jar"
