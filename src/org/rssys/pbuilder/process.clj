@@ -16,7 +16,6 @@
             [badigeon.jlink :as jlink]
             [badigeon.prompt :as prompt]
             [badigeon.uberjar :as uberjar]
-            [clojure.edn :as edn]
             [badigeon.classpath :as classpath]
             [badigeon.compile :as compile]
             [badigeon.zip :as zip]
@@ -94,7 +93,7 @@
        :deploy-creds     :m2-settings                   ;; or :password-prompt
        :group-id         \"mygroup\"
        :artifact-id      \"myartefact\"
-       :artifact-version \"0.1.0-SNAPSHOT\"
+       :artifact-version \"0.1.0-SNAPSHOT\"             ;; or e.g. #env ARTIFACT_VERSION
        :main             \"pbuilder.core\"
        :omit-source?      true
        :description      \"FIXME: New Library description here\"
@@ -108,7 +107,7 @@
   * Returns:
     `map` - as config."
   [build-filename]
-  (let [build-content    (-> build-filename slurp edn/read-string)
+  (let [build-content    (u/read-config build-filename)
         group-id         (-> build-content :group-id)
         artifact-id      (-> build-content :artifact-id)
         artifact-version (-> build-content :artifact-version)
