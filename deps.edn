@@ -4,27 +4,28 @@
  :paths     ["src" "resources" "target/classes"]
 
  :deps      {org.clojure/clojure          {:mvn/version "1.10.1"}
-             org.clojure/tools.deps.alpha {:mvn/version "0.8.677"}
+             org.clojure/tools.deps.alpha {:mvn/version "0.8.702"}
              org.clojure/tools.cli        {:mvn/version "1.0.194"}
-             org.slf4j/slf4j-simple       {:mvn/version "1.7.30"}}
+             org.slf4j/slf4j-simple       {:mvn/version "1.7.30"}
+             aero                         {:mvn/version "1.1.6"}}
 
  :aliases   {
              :run  {:extra-paths ["resources"]
                     :jvm-opts    []
                     :main-opts   ["--main" "org.rssys.pbuilder.core"]}
 
-             :repl {:extra-deps  {nrepl                {:mvn/version "0.6.0"}
-                                  healthsamurai/matcho {:mvn/version "0.3.3"}
-                                  hashp                {:mvn/version "0.1.1"}}
+             :repl {:extra-deps  {nrepl                {:mvn/version "0.7.0"}
+                                  healthsamurai/matcho {:mvn/version "0.3.7"}
+                                  hashp                {:mvn/version "0.2.0"}}
                     :jvm-opts    []
                     :extra-paths ["dev/src" "resources" "test"]
                     :main-opts   ["-e" "(require,'[hashp.core])"
                                   "-e" "(require,'[clojure.pprint,:refer,[pprint]])"
                                   "--main" "nrepl.cmdline"]}
 
-             :test {:extra-deps  {lambdaisland/kaocha           {:mvn/version "0.0-573"}
-                                  lambdaisland/kaocha-cloverage {:mvn/version "0.0-41"}
-                                  healthsamurai/matcho          {:mvn/version "0.3.3"}}
+             :test {:extra-deps  {lambdaisland/kaocha           {:mvn/version "1.0.641"}
+                                  lambdaisland/kaocha-cloverage {:mvn/version "1.0-45"}
+                                  healthsamurai/matcho          {:mvn/version "0.3.7"}}
                     :extra-paths ["resources" "test" "test/resources"]
                     :jvm-opts    []
                     :main-opts   ["--main" "kaocha.runner"]}
