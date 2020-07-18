@@ -1,4 +1,5 @@
-(ns user)
+(ns user
+  (:import (java.io FileReader BufferedReader)))
 
 ;; debug print with #p
 (require 'hashp.core)
@@ -8,7 +9,5 @@
 (def dev-mode true)
 
 (println (pr-str {:msg "development mode" :status (if (true? dev-mode) "on" "off")}) \newline)
-
-
 
 

@@ -12,7 +12,8 @@
             [badigeon.clean :as clean]
             [badigeon.sign :as sign]
             [badigeon.deploy :as deploy]
-            [badigeon.javac :as javac]
+            ;;[badigeon.javac :as javac]
+            [org.rssys.pbuilder.javac :as javac]
             [badigeon.jlink :as jlink]
             [badigeon.prompt :as prompt]
             [badigeon.uberjar :as uberjar]
@@ -127,7 +128,8 @@
   (if java-src-folder
     (do
       (println "Compiling java sources in folder:" java-src-folder " with javac options:" javac-options)
-      (javac/javac java-src-folder {;; Emit class files to the target/classes directory
+      (javac/javac java-src-folder (str target-folder "/" "classes") javac-options)
+      #_(javac/javac java-src-folder {;; Emit class files to the target/classes directory
                                     :compile-path  (str target-folder "/" "classes")
                                     ;; Additional options used by the javac command
                                     :javac-options javac-options}))

@@ -1,5 +1,15 @@
 == Changelog
 
+=== [0.2.0] - 2020-07-18
+
+Added:
+
+* support to set artifact version via ARTIFACT_VERSION environment variable
+
+Changed:
+
+* updated sources of badigeon up to 0.0.13
+
 === [0.1.11] - 2020-05-16
 
 Fixed:
