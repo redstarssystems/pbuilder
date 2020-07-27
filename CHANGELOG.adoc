@@ -1,14 +1,15 @@
 == Changelog
 
-=== [0.2.0] - 2020-07-18
+=== [0.2.0] - 2020-07-25
 
 Added:
 
-* support to set artifact version via ARTIFACT_VERSION environment variable
+* aero lib: support to set artifact version via #env ARTIFACT_VERSION environment variable
+* support for war files building 
 
 Changed:
 
-* updated sources of badigeon up to 0.0.13
+* updated sources of badigeon up to 1.0 (now Badigeon is used as dependency)
 
 === [0.1.11] - 2020-05-16
 

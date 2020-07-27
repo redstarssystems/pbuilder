@@ -4,9 +4,11 @@
  :paths     ["src" "resources" "target/classes"]
 
  :deps      {org.clojure/clojure          {:mvn/version "1.10.1"}
-             org.clojure/tools.deps.alpha {:mvn/version "0.8.702"}
+             org.clojure/tools.deps.alpha {:mvn/version "0.8.709"}
              org.clojure/tools.cli        {:mvn/version "1.0.194"}
              org.slf4j/slf4j-simple       {:mvn/version "1.7.30"}
+             metosin/malli                {:mvn/version "0.0.1-SNAPSHOT"}
+             badigeon/badigeon            {:mvn/version "1.0"}
              aero                         {:mvn/version "1.1.6"}}
 
  :aliases   {
@@ -22,6 +24,9 @@
                     :main-opts   ["-e" "(require,'[hashp.core])"
                                   "-e" "(require,'[clojure.pprint,:refer,[pprint]])"
                                   "--main" "nrepl.cmdline"]}
+
+             :ancient     {:main-opts  ["-m" "deps-ancient.deps-ancient"]
+                           :extra-deps {deps-ancient {:mvn/version "RELEASE"}}}
 
              :test {:extra-deps  {lambdaisland/kaocha           {:mvn/version "1.0.641"}
                                   lambdaisland/kaocha-cloverage {:mvn/version "1.0-45"}
