@@ -26,4 +26,16 @@
  ;;:manifest                    {"Multi-Release" "true"} ;; here you may override MANIFEST.MF
  ;; :jlink-options is used when building standalone bundle
  ;; :jlink-options               ["--strip-debug" "--no-man-pages" "--no-header-files" "--compress=2" "--add-modules" "java.sql"]
+
+ ;;:distribution-management     {
+ ;;                              :repository {
+ ;;                                           :id  "releases"
+ ;;                                           :url "http://mycompany/nexus/content/repositories/releases"}
+ ;;                              :snapshot-repository
+ ;;                                          {
+ ;;                                           :id  "snapshots"
+ ;;                                           :url "http://mycompany/nexus/content/repositories/snapshots"
+ ;;                                           }
+ ;;                              }
+
  }

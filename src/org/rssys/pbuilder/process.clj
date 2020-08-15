@@ -12,7 +12,7 @@
             [badigeon.clean :as clean]
             [badigeon.sign :as sign]
             [badigeon.deploy :as deploy]
-            ;;[badigeon.javac :as javac]
+    ;;[badigeon.javac :as javac]
             [org.rssys.pbuilder.javac :as javac]
             [badigeon.jlink :as jlink]
             [badigeon.prompt :as prompt]
@@ -47,7 +47,7 @@
 (xml/alias-uri 'ppom "http://maven.apache.org/POM/4.0.0")
 
 (defn- add-extra-stuff->pom
-  [{:keys [url description scm license]}]
+  [{:keys [url description scm license distribution-management]}]
   (let [pom-file (io/file "pom.xml")
         pom      (with-open [rdr (io/reader pom-file)]
                    (-> rdr
@@ -67,7 +67,19 @@
                                                                                            [::ppom/url (or (:url license) "")]
                                                                                            [::ppom/name (or (:name license)) ""]]]))
 
-                   pom)]
+                   pom)
+
+        pom      (if distribution-management
+                   (#'badigeon.pom/xml-update pom [::ppom/distributionManagement] (xml/sexp-as-element [::ppom/distributionManagement
+                                                                                                        [::ppom/repository
+                                                                                                         [::ppom/id (or (-> distribution-management :repository :id) "")]
+                                                                                                         [::ppom/url (or (-> distribution-management :repository :url)) ""]]
+                                                                                                        [::ppom/snapshotRepository
+                                                                                                         [::ppom/id (or (-> distribution-management :snapshot-repository :id) "")]
+                                                                                                         [::ppom/url (or (-> distribution-management :snapshot-repository :url)) ""]]]))
+                   pom)
+
+        ]
 
 
     (spit pom-file (str/replace (xml/indent-str pom) #"\n\s+\n" "\n"))
@@ -95,6 +107,7 @@
        :group-id         \"mygroup\"
        :artifact-id      \"myartefact\"
        :artifact-version \"0.1.0-SNAPSHOT\"             ;; or e.g. #env ARTIFACT_VERSION
+       :overwrite-version-file \"VERSION\"              ;; put new version after bump to this file
        :main             \"pbuilder.core\"
        :omit-source?      true
        :description      \"FIXME: New Library description here\"
@@ -130,9 +143,9 @@
       (println "Compiling java sources in folder:" java-src-folder " with javac options:" javac-options)
       (javac/javac java-src-folder (str target-folder "/" "classes") javac-options)
       #_(javac/javac java-src-folder {;; Emit class files to the target/classes directory
-                                    :compile-path  (str target-folder "/" "classes")
-                                    ;; Additional options used by the javac command
-                                    :javac-options javac-options}))
+                                      :compile-path  (str target-folder "/" "classes")
+                                      ;; Additional options used by the javac command
+                                      :javac-options javac-options}))
     (println "Skip step for compile java sources (:java-src-folder is nil). See key :java-src-folder in pbuilder config.")))
 
 (defn make-pom

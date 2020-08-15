@@ -5,8 +5,8 @@
 Added:
 
 * flag :overwrite-version-file to overwrite file with artifact version during bump.
-It may be useful for push artifact version to ENV variable. 
-* 
+It may be useful for push artifact version to ENV variable from :overwrite-version-file. 
+* added distributionManagement support when generating pom
 
 === [0.2.0] - 2020-07-18
 

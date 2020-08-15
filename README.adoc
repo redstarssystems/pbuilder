@@ -36,7 +36,7 @@ First, add a new pbuilder dependency to `:aliases` section of `deps.edn`  (see t
 [source,clojure]
 ----
 
-     :pbuilder {:extra-deps {org.rssys/pbuilder {:mvn/version "0.2.0"}}
+     :pbuilder {:extra-deps {org.rssys/pbuilder {:mvn/version "0.2.1"}}
                 :jvm-opts   []
                 :main-opts  ["--main" "org.rssys.pbuilder.core"]}
 
@@ -51,6 +51,7 @@ Here is an example of structure `pbuild.edn` for this project:
 
 [source,clojure]
 ----
+
 {
  ;;:java-src-folder "java-src"
  ;;:javac-options     ["-target" "1.8" "-source" "1.8" "-Xlint:-options"]
@@ -64,9 +65,10 @@ Here is an example of structure `pbuild.edn` for this project:
  :target-folder               "target"
  :group-id                    "org.rssys"
  :artifact-id                 "pbuilder"
- :artifact-version            "0.2.0-SNAPSHOT"             ;; or e.g. #env ARTIFACT_VERSION
+ :artifact-version            "0.2.1-SNAPSHOT"                ;; or e.g. #env ARTIFACT_VERSION
+ ;;:overwrite-version-file      "VERSION"                     ;; overwrite this file during bump
  :main                        "org.rssys.pbuilder.core"
- ;;:omit-source?                true
+ :omit-source?                true
  ;;:uberjar-filename            "pbuilder.jar"
  :description                 "Project builder is a build tool for Clojure projects with tools.deps."
  :url                         "https://github.com/redstarssystems/pbuilder.git"
@@ -75,10 +77,23 @@ Here is an example of structure `pbuild.edn` for this project:
                                :url  "https://www.eclipse.org/legal/epl-2.0/"}
  :excluded-libs               #{}                           ;; e.g #{ org.clojure/clojure my.org/lib01}
  ;;:standalone-run-script       "./my-custom-script.sh"
- ;;:manifest                    {"Multi-Release" "true"}    ;; here you may override MANIFEST.MF
+ ;;:manifest                    {"Multi-Release" "true"} ;; here you may override MANIFEST.MF
  ;; :jlink-options is used when building standalone bundle
- ;; :jlink-options               ["--strip-debug" "--no-man-pages" "--no-header-files" "--compress=2" "--add-modules" "java.base,java.sql"]
+ ;; :jlink-options               ["--strip-debug" "--no-man-pages" "--no-header-files" "--compress=2" "--add-modules" "java.sql"]
+
+ ;;:distribution-management     {
+ ;;                              :repository {
+ ;;                                           :id  "releases"
+ ;;                                           :url "http://mycompany/nexus/content/repositories/releases"}
+ ;;                              :snapshot-repository
+ ;;                                          {
+ ;;                                           :id  "snapshots"
+ ;;                                           :url "http://mycompany/nexus/content/repositories/snapshots"
+ ;;                                           }
+ ;;                              }
+
  }
+
 ----
 
 To run `pbuilder`, use `clojure -A:pbuilder <command>`.
