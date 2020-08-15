@@ -11,7 +11,8 @@
  :target-folder               "target"
  :group-id                    "org.rssys"
  :artifact-id                 "pbuilder"
- :artifact-version            "0.2.0-SNAPSHOT"
+ :artifact-version            "0.2.1-SNAPSHOT"
+ ;;:overwrite-version-file      "VERSION"                     ;; overwrite this file during bump
  :main                        "org.rssys.pbuilder.core"
  :omit-source?                true
  ;;:uberjar-filename            "pbuilder.jar"

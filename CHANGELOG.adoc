@@ -1,5 +1,13 @@
 == Changelog
 
+=== [0.2.1] - 2020-08-15
+
+Added:
+
+* flag :overwrite-version-file to overwrite file with artifact version during bump.
+It may be useful for push artifact version to ENV variable. 
+* 
+
 === [0.2.0] - 2020-07-18
 
 Added:

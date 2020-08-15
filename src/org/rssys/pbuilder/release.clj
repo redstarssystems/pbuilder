@@ -121,7 +121,10 @@
   (let [old-file    (slurp build-filename)
         new-content (str/replace old-file (:artifact-version config) new-version)
         _           (spit build-filename new-content)]
-    (println "file:" build-filename "modified. New artifact version is:" new-version)))
+    (println "file:" build-filename "modified. New artifact version is:" new-version)
+    (when (:overwrite-version-file config)
+      (spit (:overwrite-version-file config) new-version)
+      (println "file:" (:overwrite-version-file config) " overwritten with version" new-version))))
 
 (defn run-release
   "# run release cycle for library
