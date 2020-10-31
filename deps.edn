@@ -3,8 +3,8 @@
 
  :paths     ["src" "resources" "target/classes"]
 
- :deps      {org.clojure/clojure          {:mvn/version "1.10.1"}
-             org.clojure/tools.deps.alpha {:mvn/version "0.8.702"}
+ :deps      {org.clojure/clojure          {:mvn/version "1.10.2-alpha2"}
+             org.clojure/tools.deps.alpha {:mvn/version "0.9.782"}
              org.clojure/tools.cli        {:mvn/version "1.0.194"}
              org.slf4j/slf4j-simple       {:mvn/version "1.7.30"}
              aero                         {:mvn/version "1.1.6"}}

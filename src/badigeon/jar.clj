@@ -1,13 +1,13 @@
 (ns badigeon.jar
-  (:require [clojure.tools.deps.alpha.reader :as deps-reader]
+  (:require [clojure.tools.deps.alpha :as deps]
             [badigeon.pom :as pom]
             [badigeon.utils :as utils]
             [clojure.string :as string]
-            [clojure.java.io :as io]
-            [clojure.tools.deps.alpha.util.maven :as maven])
+            [clojure.tools.deps.alpha.util.maven :as maven]
+            [clojure.java.io :as io])
   (:import [java.nio.file Path Paths Files]
            [java.util EnumSet]
-           [java.util.jar Manifest JarEntry JarOutputStream]
+           [java.util.jar Manifest JarOutputStream JarEntry]
            [java.nio.file FileVisitor FileVisitResult FileSystemLoopException
             FileVisitOption NoSuchFileException]
            [java.io File BufferedOutputStream FileOutputStream ByteArrayInputStream]))
@@ -101,21 +101,10 @@
       (readme-path group-id artifact-id root-files path)
       (license-path group-id artifact-id root-files path)))
 
-(defn- put-jar-entry!
-  "Adds a jar entry to the Jar output stream."
-  [^JarOutputStream jar-out ^File file path]
-  (.putNextEntry jar-out (doto (JarEntry. (str path))
-                           (.setTime (.lastModified file))))
-  (when-not (.isDirectory file)
-    (io/copy file jar-out)))
-
-(defn- path-file-visitor [jar-out exclusion-predicate root-path ^Path path attrs]
-  (let [file-name (.getFileName path)]
-    (when (and (not= root-path path)
-               (not (when exclusion-predicate (exclusion-predicate root-path path))))
-      (let [f (.toFile path)
-            relative-path (str (utils/relativize-path root-path path))]
-        (put-jar-entry! jar-out f relative-path)))))
+(defn- path-file-visitor [jar-out exclusion-predicate root-path path attrs]
+  (when (and (not= root-path path)
+             (not (when exclusion-predicate (exclusion-predicate root-path path))))
+    (utils/put-zip-entry! jar-out root-path path)))
 
 (defn- inclusion-path-visitor [^JarOutputStream jar-out pred root-path ^Path path attrs]
   (when-let [file-name (when pred (pred root-path path))]
@@ -131,11 +120,13 @@
     (.putNextEntry jar-out (JarEntry. path))
     (io/copy pom-properties jar-out)))
 
-(defn- make-file-visitor [jar-out pred root-path visitor-fn]
+(defn- make-file-visitor [jar-out pred root-path add-directories? visitor-fn]
   (reify FileVisitor
     (postVisitDirectory [_ dir exception]
       FileVisitResult/CONTINUE)
     (preVisitDirectory [_ dir attrs]
+      (when add-directories?
+        (utils/put-zip-entry! jar-out root-path dir))
       FileVisitResult/CONTINUE)
     (visitFile [_ path attrs]
       (visitor-fn jar-out pred root-path path attrs)
@@ -164,7 +155,7 @@
   - maven-coords: A map with the same format than tools.deps maven coordinates.
   - out-path: The path of the produced jar file. When not provided, a default out-path is generated from the lib and maven coordinates.
   - main: A namespace to be added to the \"Main\" entry to the jar manifest. Default to nil.
-  - manifest: A map of additionel entries to the jar manifest. Values of the manifest map can be maps to represent manifest sections. By default, the jar manifest contains the \"Created-by\", \"Built-By\" and \"Build-Jdk\" entries.
+  - manifest: A map of additional entries to the jar manifest. Values of the manifest map can be maps to represent manifest sections. By default, the jar manifest contains the \"Created-by\", \"Built-By\" and \"Build-Jdk\" entries.
   - paths: A vector of the paths containing the resources to be bundled into the jar. Default to the paths of the deps.edn file.
   - deps: The dependencies of the project. deps have the same format than the :deps entry of a tools.deps map. Dependencies are copied to the pom.xml file produced while generating the jar file. Default to the deps.edn dependencies of the project (excluding the system-level and user-level deps.edn dependencies).
   - mvn/repos: Repositories to be copied to the pom.xml file produced while generating the jar. Must have same format than the :mvn/repos entry of deps.edn. Default to nil.
@@ -199,11 +190,14 @@
          out-path (if (and (instance? Path out-path) (not (.isAbsolute ^Path out-path)))
                     (.resolve ^Path root-path ^Path out-path)
                     out-path)
+         deps-map (when-not (.exists (io/file "deps.edn"))
+                    {})
          ;; Do not merge system and user wide deps.edn files
-         deps-map (-> (deps-reader/slurp-deps "deps.edn")
-                      ;; Replositories must be explicilty provided as parameters
-                      (dissoc :mvn/repos)
-                      (merge (select-keys options [:paths :deps :mvn/repos])))
+         deps-map (or deps-map
+                      (-> (deps/slurp-deps (io/file "deps.edn"))
+                          ;; Replositories must be explicilty provided as parameters
+                          (dissoc :mvn/repos)
+                          (merge (select-keys options [:paths :deps :mvn/repos]))))
          the-manifest (-> (make-manifest main manifest)
                           (.getBytes)
                           (ByteArrayInputStream.)
@@ -221,7 +215,7 @@
                            (EnumSet/of FileVisitOption/FOLLOW_LINKS)
                            Integer/MAX_VALUE
                            (make-file-visitor
-                            jar-out inclusion-path root-path
+                            jar-out inclusion-path root-path false
                             inclusion-path-visitor))
        (doseq [path (:paths deps-map)]
          (Files/walkFileTree (.resolve root-path ^String path)
@@ -229,7 +223,7 @@
                              Integer/MAX_VALUE
                              (make-file-visitor
                               jar-out exclusion-predicate
-                              (.resolve root-path ^String path)
+                              (.resolve root-path ^String path) true
                               path-file-visitor)))
        (copy-pom-properties jar-out group-id artifact-id pom-properties))
      (str out-path))))

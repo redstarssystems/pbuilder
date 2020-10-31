@@ -1,6 +1,5 @@
 (ns badigeon.uberjar
   (:require [clojure.tools.deps.alpha :as deps]
-            [clojure.tools.deps.alpha.reader :as deps-reader]
             [badigeon.bundle :as bundle]
             [badigeon.utils :as utils]
             [clojure.java.io :as io])
@@ -79,7 +78,7 @@
   ([]
    (find-resource-conflicts* nil))
   ([{:keys [deps-map aliases]}]
-   (let [deps-map (or deps-map (deps-reader/slurp-deps "deps.edn"))
+   (let [deps-map (or deps-map (deps/slurp-deps (io/file "deps.edn")))
          deps-map (update deps-map :mvn/repos utils/with-standard-repos)
          args-map (deps/combine-aliases deps-map aliases)
          resolved-deps (deps/resolve-deps deps-map args-map)]
@@ -97,7 +96,7 @@
 
 (defn- resource-root-path->string [v]
   (if (instance? JarFile v)
-    (.getName v)
+    (.getName ^JarFile v)
     (str v)))
 
 (defn- find-resource-conflicts-reducer [res-conflicts k v]
@@ -129,11 +128,13 @@
             :when (not (.isDirectory entry))]
       (let [entry-path (.getName entry)]
         (when-not (contains? *resource-conflict-paths* entry-path)
-          (let [f-path (.resolve to entry-path)
-                file (.toFile f-path)]
-            (Files/createDirectories (.getParent f-path) (make-array FileAttribute 0))
-            (io/copy (.getInputStream jar-file entry) file)
-            (.setLastModified file (.getTime entry))))))))
+          (try (let [f-path (.resolve to entry-path)
+                 file   (.toFile f-path)]
+             (Files/createDirectories (.getParent f-path) (make-array FileAttribute 0))
+             (io/copy (.getInputStream jar-file entry) file)
+             (.setLastModified file (.getTime entry)))
+               (catch Exception e
+                 (println "got exception:" (.getMessage e)))))))))
 
 (defn- make-directory-file-visitor [^Path root-path ^Path to]
   (reify FileVisitor
@@ -197,7 +198,7 @@
                      allow-unstable-deps?
                      warn-on-resource-conflicts?]
               :or {warn-on-resource-conflicts? true}}]
-   (let [deps-map (or deps-map (deps-reader/slurp-deps "deps.edn"))
+   (let [deps-map (or deps-map (deps/slurp-deps (io/file "deps.edn")))
          deps-map (update deps-map :mvn/repos utils/with-standard-repos)
          args-map (deps/combine-aliases deps-map aliases)
          resolved-deps (deps/resolve-deps deps-map args-map)
@@ -256,8 +257,10 @@
   (let [out-path (.resolve out-path path)
         init-val (merger-reducer merger path (first resources))
         resources (rest resources)
-        merged-resource (reduce (partial merger-reducer merger path) init-val resources)]
-    (with-open [file-out (FileOutputStream. (.toFile out-path))]
+        merged-resource (reduce (partial merger-reducer merger path) init-val resources)
+        out-file (.toFile out-path)]
+    (.mkdirs (.getParentFile out-file))
+    (with-open [file-out (FileOutputStream. out-file)]
       (write file-out merged-resource))))
 
 (def default-resource-mergers
@@ -298,14 +301,14 @@
 
 (comment
   (merge-resource-conflicts (make-out-path 'badigeon utils/version))
-  
+
   (find-resource-conflicts
-   {:deps-map (deps-reader/slurp-deps "deps.edn") :aliases [:doc]})
-  
+   {:deps-map (deps/slurp-deps (io/file "deps.edn")) :aliases [#_:doc]})
+
   (let [out-path (make-out-path 'badigeon utils/version)]
     (badigeon.clean/clean out-path)
     (bundle out-path
-            {:deps-map (deps-reader/slurp-deps "deps.edn")
+            {:deps-map (deps/slurp-deps (io/file "deps.edn"))
              :excluded-libs #{'org.clojure/clojure}
              :allow-unstable-deps? true
              :warn-on-resource-conflicts? true}))

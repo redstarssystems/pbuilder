@@ -42,7 +42,7 @@
     [clojure.edn :as edn]
     [clojure.tools.deps.alpha :as deps]
     [clojure.tools.deps.alpha.util.maven :as mvn]
-    [clojure.tools.deps.alpha.reader :as reader])
+    [clojure.java.io :as io])
   (:import
     (java.util EnumSet)
     (java.io ByteArrayOutputStream)
@@ -93,8 +93,8 @@
 
 
 (defn- make-classpath []
-  (let [deps-map (-> "deps.edn"
-                   reader/slurp-deps
+  (let [deps-map (-> (io/file "deps.edn")
+                   deps/slurp-deps
                    (update :mvn/repos merge-default-repos))
         paths    (:paths deps-map)
         args-map {}]
