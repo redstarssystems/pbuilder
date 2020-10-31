@@ -4,9 +4,10 @@
 
 Added:
 
-* updated badigeon sources up to 1.1
+* update badigeon sources up to 1.1
 * minor bug fixes with xml parsing
 * bug fix in badigeon file processing
+* update tools.deps api changes
 
 
 === [0.2.1] - 2020-08-15
